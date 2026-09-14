@@ -15,7 +15,7 @@ function FinalCTASection() {
             component="section"
             sx={{
                 bgcolor: "#FFFFFF",
-                py: { xs: 5, md: 6 },
+                py: { xs: 4, md: 5 },
             }}
         >
             <Container maxWidth="lg">
@@ -25,7 +25,6 @@ function FinalCTASection() {
                         overflow: "hidden",
                         borderRadius: { xs: "20px", md: "24px" },
 
-                        // BACKGROUND IMAGE
                         backgroundImage: `
               linear-gradient(
                 90deg,
@@ -34,7 +33,7 @@ function FinalCTASection() {
                 rgba(7, 29, 52, 0.50) 72%,
                 rgba(7, 29, 52, 0.25) 100%
               ),
-              url("/cta-bg.jpg")
+              url("/cta-bg.png")
             `,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
@@ -50,7 +49,6 @@ function FinalCTASection() {
                         boxShadow: "0 20px 50px rgba(11,31,58,0.14)",
                     }}
                 >
-                    {/* ORANGE GLOW */}
                     <Box
                         sx={{
                             position: "absolute",
@@ -65,7 +63,6 @@ function FinalCTASection() {
                         }}
                     />
 
-                    {/* CONTENT */}
                     <Box
                         sx={{
                             position: "relative",
@@ -73,7 +70,6 @@ function FinalCTASection() {
                             maxWidth: "620px",
                         }}
                     >
-                        {/* SMALL LABEL */}
                         <Box
                             sx={{
                                 display: "inline-flex",
@@ -97,7 +93,6 @@ function FinalCTASection() {
                             </Typography>
                         </Box>
 
-                        {/* TITLE */}
                         <Typography
                             component="h2"
                             sx={{
@@ -105,7 +100,7 @@ function FinalCTASection() {
                                 fontSize: {
                                     xs: "30px",
                                     sm: "35px",
-                                    md: "39px",
+                                    md: "37px",
                                 },
                                 fontWeight: 800,
                                 lineHeight: 1.08,
@@ -123,7 +118,6 @@ function FinalCTASection() {
                             </Box>
                         </Typography>
 
-                        {/* DESCRIPTION */}
                         <Typography
                             sx={{
                                 color: "rgba(255,255,255,0.70)",
@@ -137,7 +131,6 @@ function FinalCTASection() {
                             votre activité avec NexaDelivery.
                         </Typography>
 
-                        {/* BUTTONS */}
                         <Stack
                             direction="row"
                             spacing={1.2}

@@ -7,19 +7,32 @@ import HowItWorks from "./components/Home/HowItWorks.jsx";
 import ImpactSection from "./components/Home/ImpactSection.jsx";
 import TestimonialsSection from "./components/Home/TestimonialsSection.jsx";
 import FinalCTASection from "./components/Home/FinalCTASection.jsx";
+import Footer from "./components/Home/Footer.jsx";
+import {Route, Routes} from "react-router-dom";
+import Login from "./page/Login.jsx";
 
 function App() {
 
   return (
     <>
-      <Navbar/>
-      <Hero/>
-        <MerchantSection/>
-        <PlatformSection/>
-        <HowItWorks/>
-        <ImpactSection/>
-        <TestimonialsSection/>
-        <FinalCTASection/>
+
+
+        <Routes>
+            <Route path="/" element={<>
+                <Navbar/>
+                <Hero/>
+                <MerchantSection/>
+                <PlatformSection/>
+                <HowItWorks/>
+                <ImpactSection/>
+                <TestimonialsSection/>
+                <FinalCTASection/>
+                <Footer/>
+            </>}/>
+            <Route path="/login" element={<Login/>}/>
+
+
+        </Routes>
     </>
   )
 }

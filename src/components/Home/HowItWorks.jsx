@@ -505,7 +505,6 @@ function RoutePoint({
                 textAlign: "center",
             }}
         >
-            {/* POINT */}
 
             <Box
                 sx={{

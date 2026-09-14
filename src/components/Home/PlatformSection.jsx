@@ -108,7 +108,6 @@ function PlatformSection() {
                             livrer et suivre vos opérations en toute simplicité.
                         </Typography>
 
-                        {/* FEATURES */}
                         <Box
                             sx={{
                                 display: "grid",
@@ -186,7 +185,6 @@ function PlatformSection() {
                         </Box>
                     </Box>
 
-                    {/* RIGHT VISUAL */}
                     <Box
                         sx={{
                             position: "relative",
@@ -199,7 +197,6 @@ function PlatformSection() {
                             justifyContent: "center",
                         }}
                     >
-                        {/* BLUE GLOW */}
                         <Box
                             sx={{
                                 position: "absolute",

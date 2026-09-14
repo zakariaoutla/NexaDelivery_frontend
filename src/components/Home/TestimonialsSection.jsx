@@ -48,7 +48,6 @@ function TestimonialsSection() {
                 pb: { xs: 8, md: 10 },
             }}
         >
-            {/* DECORATION */}
             <Box
                 sx={{
                     position: "absolute",
@@ -80,7 +79,6 @@ function TestimonialsSection() {
                     zIndex: 2,
                 }}
             >
-                {/* HEADER */}
                 <Box
                     sx={{
                         position: "relative",
@@ -156,7 +154,6 @@ function TestimonialsSection() {
                         </Typography>
                     </Box>
 
-                    {/* ARROWS */}
                     <Stack
                         direction="row"
                         spacing={1}
@@ -210,7 +207,6 @@ function TestimonialsSection() {
                     </Stack>
                 </Box>
 
-                {/* CARDS */}
                 <Box
                     sx={{
                         display: "grid",
@@ -252,7 +248,6 @@ function TestimonialsSection() {
                                 },
                             }}
                         >
-                            {/* QUOTE ICON */}
                             <Box
                                 sx={{
                                     width: "42px",
@@ -273,7 +268,6 @@ function TestimonialsSection() {
                                 <FormatQuoteRoundedIcon />
                             </Box>
 
-                            {/* STARS */}
                             <Stack
                                 direction="row"
                                 spacing={0.2}
@@ -290,7 +284,6 @@ function TestimonialsSection() {
                                 ))}
                             </Stack>
 
-                            {/* TEXT */}
                             <Typography
                                 sx={{
                                     color: "#41506A",
@@ -302,7 +295,6 @@ function TestimonialsSection() {
                                 “{testimonial.text}”
                             </Typography>
 
-                            {/* USER */}
                             <Stack
                                 direction="row"
                                 alignItems="center"

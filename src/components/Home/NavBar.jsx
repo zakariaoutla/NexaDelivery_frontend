@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
     AppBar,
     Toolbar,
@@ -11,9 +12,11 @@ import {
 
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import {NavLink, useNavigate} from "react-router-dom";
 
 function Navbar() {
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
     const navLinks = [
         { label: "Accueil", href: "#home", active: true },
@@ -31,19 +34,40 @@ function Navbar() {
                 sx={{
                     backgroundColor: "transparent",
                     boxShadow: "none",
-                    zIndex: 1000,
+                    zIndex: 9999,
+                    left: 0,
+                    right: 0,
+                    width: "100%",
+                    pointerEvents: "auto",
                 }}
             >
                 <Toolbar
                     sx={{
-                        maxWidth: "1200px",
                         width: "100%",
+                        maxWidth: {
+                            xs: "100%",
+                            sm: "100%",
+                            md: "100%",
+                            lg: "1200px",
+                            xl: "1380px",
+                        },
                         mx: "auto",
-                        minHeight: "78px !important",
-                        px: { xs: 2, md: 3 },
+
+                        minHeight: {
+                            xs: "78px !important",
+                            md: "88px !important",
+                        },
+
+                        px: {
+                            xs: 2.5,
+                            sm: 3,
+                            md: 4,
+                            lg: 5,
+                            xl: 6,
+                        },
+
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
                     }}
                 >
                     <Box
@@ -52,25 +76,44 @@ function Navbar() {
                         alt="NexaDelivery"
                         sx={{
                             width: {
-                                xs: "145px",
-                                sm: "160px",
-                                md: "175px",
+                                xs: "155px",
+                                sm: "175px",
+                                md: "195px",
+                                lg: "210px",
+                                xl: "220px",
                             },
+
                             height: "auto",
-                            cursor: "pointer",
+                            display: "block",
+                            objectFit: "contain",
                             flexShrink: 0,
+                            cursor: "pointer",
                         }}
                     />
 
-                    {/* DESKTOP NAVIGATION */}
                     <Stack
                         direction="row"
-                        spacing={3.5}
                         sx={{
-                            display: { xs: "none", md: "flex" },
+                            display: {
+                                xs: "none",
+                                md: "flex",
+                            },
+
                             alignItems: "center",
+
                             ml: "auto",
-                            mr: 5,
+
+                            mr: {
+                                md: 2.5,
+                                lg: 4,
+                                xl: 5,
+                            },
+
+                            gap: {
+                                md: 1.8,
+                                lg: 2.8,
+                                xl: 3.5,
+                            },
                         }}
                     >
                         {navLinks.map((link) => (
@@ -80,13 +123,22 @@ function Navbar() {
                                 disableRipple
                                 sx={{
                                     position: "relative",
+
                                     color: "#FFFFFF",
                                     textTransform: "none",
                                     fontWeight: 500,
-                                    fontSize: "13px",
+
+                                    fontSize: {
+                                        md: "11px",
+                                        lg: "12px",
+                                        xl: "13px",
+                                    },
+
                                     minWidth: "auto",
-                                    px: 0,
+                                    px: 0.4,
                                     py: 1,
+
+                                    whiteSpace: "nowrap",
 
                                     "&:hover": {
                                         backgroundColor: "transparent",
@@ -97,12 +149,17 @@ function Navbar() {
                                         "&::after": {
                                             content: '""',
                                             position: "absolute",
-                                            bottom: "2px",
+
+                                            bottom: "1px",
                                             left: "50%",
+
                                             transform: "translateX(-50%)",
-                                            width: "100%",
+
+                                            width: "80%",
                                             height: "2px",
+
                                             borderRadius: "10px",
+
                                             backgroundColor: "#FF6B00",
                                         },
                                     }),
@@ -113,27 +170,53 @@ function Navbar() {
                         ))}
                     </Stack>
 
-                    {/* DESKTOP ACTIONS */}
                     <Stack
                         direction="row"
-                        spacing={1.5}
+                        spacing={1.2}
                         sx={{
-                            display: { xs: "none", md: "flex" },
+                            display: {
+                                xs: "none",
+                                md: "flex",
+                            },
+
                             alignItems: "center",
+                            flexShrink: 0,
                         }}
                     >
                         <Button
+                            component={NavLink}
+                            to="/login"
                             variant="outlined"
                             sx={{
                                 color: "#FFFFFF",
+
                                 borderColor: "rgba(255,255,255,0.55)",
+
                                 textTransform: "none",
-                                fontSize: "13px",
+
+                                fontSize: {
+                                    md: "10px",
+                                    lg: "11px",
+                                    xl: "12px",
+                                },
+
                                 fontWeight: 500,
-                                px: 2.5,
+
+                                px: {
+                                    md: 1.6,
+                                    lg: 2,
+                                    xl: 2.5,
+                                },
+
                                 py: 1,
+
                                 borderRadius: "10px",
-                                minWidth: "110px",
+
+                                minWidth: {
+                                    md: "95px",
+                                    lg: "100px",
+                                    xl: "110px",
+                                },
 
                                 "&:hover": {
                                     borderColor: "#FFFFFF",
@@ -150,13 +233,32 @@ function Navbar() {
                             sx={{
                                 backgroundColor: "#FF6B00",
                                 color: "#FFFFFF",
+
                                 textTransform: "none",
-                                fontSize: "13px",
+
+                                fontSize: {
+                                    md: "10px",
+                                    lg: "11px",
+                                    xl: "12px",
+                                },
+
                                 fontWeight: 600,
-                                px: 2.7,
+
+                                px: {
+                                    md: 1.6,
+                                    lg: 2,
+                                    xl: 2.5,
+                                },
+
                                 py: 1,
+
                                 borderRadius: "10px",
-                                minWidth: "105px",
+
+                                minWidth: {
+                                    md: "90px",
+                                    lg: "95px",
+                                    xl: "105px",
+                                },
 
                                 "&:hover": {
                                     backgroundColor: "#E85F00",
@@ -167,11 +269,14 @@ function Navbar() {
                         </Button>
                     </Stack>
 
-                    {/* MOBILE BUTTON */}
                     <IconButton
                         onClick={() => setOpen(true)}
                         sx={{
-                            display: { xs: "flex", md: "none" },
+                            display: {
+                                xs: "flex",
+                                md: "none",
+                            },
+
                             color: "#FFFFFF",
                             ml: "auto",
                         }}
@@ -197,10 +302,21 @@ function Navbar() {
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: "flex-end",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                         mb: 3,
                     }}
                 >
+                    <Box
+                        component="img"
+                        src="/logonexadelivry.png"
+                        alt="NexaDelivery"
+                        sx={{
+                            width: "155px",
+                            height: "auto",
+                        }}
+                    />
+
                     <IconButton
                         onClick={() => setOpen(false)}
                         sx={{
@@ -211,7 +327,7 @@ function Navbar() {
                     </IconButton>
                 </Box>
 
-                <Stack spacing={1.5}>
+                <Stack spacing={1.3}>
                     {navLinks.map((link) => (
                         <Button
                             key={link.label}
@@ -219,11 +335,18 @@ function Navbar() {
                             onClick={() => setOpen(false)}
                             sx={{
                                 justifyContent: "flex-start",
+
                                 color: "#FFFFFF",
+
                                 textTransform: "none",
+
                                 fontWeight: 500,
                                 fontSize: "15px",
-                                py: 1,
+
+                                py: 1.1,
+                                px: 1,
+
+                                borderRadius: "8px",
 
                                 "&:hover": {
                                     color: "#FF6B00",
@@ -244,12 +367,18 @@ function Navbar() {
                     />
 
                     <Button
+                        to="/login"
                         variant="outlined"
                         sx={{
                             color: "#FFFFFF",
+
                             borderColor: "rgba(255,255,255,0.5)",
+
                             textTransform: "none",
+
                             borderRadius: "10px",
+
+                            py: 1.2,
 
                             "&:hover": {
                                 borderColor: "#FFFFFF",
@@ -261,14 +390,21 @@ function Navbar() {
                     </Button>
 
                     <Button
+
                         variant="contained"
                         disableElevation
                         sx={{
                             backgroundColor: "#FF6B00",
+
                             color: "#FFFFFF",
+
                             textTransform: "none",
+
                             fontWeight: 600,
+
                             borderRadius: "10px",
+
+                            py: 1.2,
 
                             "&:hover": {
                                 backgroundColor: "#E85F00",
