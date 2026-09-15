@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
     const updateUserFromToken = (token) => {
         try {
             const decodedToken = jwtDecode(token);
-
             if (isTokenExpired(decodedToken)) {
                 localStorage.removeItem('token');
                 setUser(null);

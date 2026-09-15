@@ -20,6 +20,7 @@ import {useNavigate} from "react-router-dom";
 import {postLogin} from "../api/auth.js";
 import {toast} from "react-toastify";
 import {AuthContext} from "../Config/AuthContext.jsx";
+import {jwtDecode} from "jwt-decode";
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
@@ -49,12 +50,25 @@ function Login() {
           const res=  await postLogin(formData)
             const token = res.data.token
             login(token)
-            toast.success("logina")
-            navigate("/")
+            const decodedToken = jwtDecode(token)
+            const role = decodedToken.role;
+            toast.success("Connexion réussie")
+
+            if (role === "ADMIN"){
+                navigate("/admin");
+            }else if(role==="MERCHANT"){
+                navigate("/merchant");
+            }else if(role ==="DRIVER"){
+                navigate("/driver");
+            }else {
+                navigate("/");
+            }
+
         }catch (err){
             console.error(err)
-            toast.error("kayn err")
+            toast.error("Email ou mot de passe incorrect")
         }
+
     };
 
     return (

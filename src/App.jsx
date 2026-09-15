@@ -12,6 +12,10 @@ import {Route, Routes} from "react-router-dom";
 import Login from "./page/Login.jsx";
 import Register from "./page/Register.jsx";
 import {ToastContainer} from "react-toastify";
+import RouteGuard from "./Config/RouteGuard.jsx";
+import AdminDashboard from "./page/AdminDashboard.jsx";
+import MerchantDashboard from "./page/MerchantDashboard.jsx";
+import DriverDashboard from "./page/DriverDashboard.jsx";
 
 function App() {
 
@@ -33,6 +37,26 @@ function App() {
             </>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>
+
+
+            <Route path="/admin" element={<>
+                <RouteGuard allowedRoles={["ADMIN"]}>
+                    <AdminDashboard/>
+                </RouteGuard>
+
+            </>}/>
+
+            <Route path="/merchant" element={<>
+               <RouteGuard allowedRoles={["MERCHANT"]}>
+                   <MerchantDashboard/>
+               </RouteGuard>
+            </>}/>
+
+            <Route path="/driver" element={<>
+            <RouteGuard allowedRoles={["DRIVER"]}>
+                <DriverDashboard/>
+            </RouteGuard>
+            </>}/>
         </Routes>
 
         <ToastContainer position="bottom-right" />
