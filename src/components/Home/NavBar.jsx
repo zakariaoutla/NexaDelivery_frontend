@@ -48,7 +48,7 @@ function Navbar() {
                             xs: "100%",
                             sm: "100%",
                             md: "100%",
-                            lg: "1200px",
+                            lg: "1150px",
                             xl: "1380px",
                         },
                         mx: "auto",
@@ -228,6 +228,8 @@ function Navbar() {
                         </Button>
 
                         <Button
+                            component={NavLink}
+                            to="/register"
                             variant="contained"
                             disableElevation
                             sx={{

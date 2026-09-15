@@ -4,11 +4,19 @@ import {BrowserRouter} from "react-router-dom";
 
 import './index.css'
 import App from './App.jsx'
+import {AuthProvider} from "./Config/AuthContext.jsx";
+import AxiosSetup from "./api/AxiosSetup.js";
 
 createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
+
   <StrictMode>
+    <BrowserRouter>
+    <AxiosSetup>
+      <AuthProvider>
     <App />
-  </StrictMode>
+      </AuthProvider>
+    </AxiosSetup>
     </BrowserRouter>
+  </StrictMode>
+
 )

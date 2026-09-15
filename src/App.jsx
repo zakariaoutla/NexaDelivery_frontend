@@ -10,6 +10,8 @@ import FinalCTASection from "./components/Home/FinalCTASection.jsx";
 import Footer from "./components/Home/Footer.jsx";
 import {Route, Routes} from "react-router-dom";
 import Login from "./page/Login.jsx";
+import Register from "./page/Register.jsx";
+import {ToastContainer} from "react-toastify";
 
 function App() {
 
@@ -30,9 +32,11 @@ function App() {
                 <Footer/>
             </>}/>
             <Route path="/login" element={<Login/>}/>
-
-
+            <Route path="/register" element={<Register/>}/>
         </Routes>
+
+        <ToastContainer position="bottom-right" />
+
     </>
   )
 }

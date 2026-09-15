@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useContext, useState} from "react";
 
 import {
     Box,
@@ -17,10 +17,15 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import {useNavigate} from "react-router-dom";
+import {postLogin} from "../api/auth.js";
+import {toast} from "react-toastify";
+import {AuthContext} from "../Config/AuthContext.jsx";
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const {login} = useContext(AuthContext)
+
 
 
     const [formData, setFormData] = useState({
@@ -38,12 +43,18 @@ function Login() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        console.log(formData);
-
-
+        try {
+          const res=  await postLogin(formData)
+            const token = res.data.token
+            login(token)
+            toast.success("logina")
+            navigate("/")
+        }catch (err){
+            console.error(err)
+            toast.error("kayn err")
+        }
     };
 
     return (
