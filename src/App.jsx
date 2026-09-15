@@ -14,8 +14,12 @@ import Register from "./page/Register.jsx";
 import {ToastContainer} from "react-toastify";
 import RouteGuard from "./Config/RouteGuard.jsx";
 import AdminDashboard from "./page/AdminDashboard.jsx";
-import MerchantDashboard from "./page/MerchantDashboard.jsx";
+import MerchantDashboard from "./page/merchant/MerchantDashboard.jsx";
 import DriverDashboard from "./page/DriverDashboard.jsx";
+import MerchantLayout from "./layout/MerchantLayout.jsx";
+import CreateDelivery from "./page/merchant/CreateDelivery.jsx";
+import MyDeliveries from "./page/merchant/MyDeliveries.jsx";
+import MerchantProfile from "./page/merchant/MerchantProfile.jsx";
 
 function App() {
 
@@ -35,28 +39,36 @@ function App() {
                 <FinalCTASection/>
                 <Footer/>
             </>}/>
+
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>
 
 
-            <Route path="/admin" element={<>
+            <Route path="/admin" element={
                 <RouteGuard allowedRoles={["ADMIN"]}>
                     <AdminDashboard/>
                 </RouteGuard>
-
-            </>}/>
+            }/>
 
             <Route path="/merchant" element={<>
                <RouteGuard allowedRoles={["MERCHANT"]}>
-                   <MerchantDashboard/>
+                   <MerchantLayout/>
                </RouteGuard>
-            </>}/>
+            </>}>
+                <Route index element={<MerchantDashboard/>}/>
+                <Route path="deliveries/create" element={<CreateDelivery/>}/>
+                <Route path="deliveries" element={<MyDeliveries/>}/>
+                <Route path="profile" element={<MerchantProfile/>}/>
+
+                </Route>
 
             <Route path="/driver" element={<>
             <RouteGuard allowedRoles={["DRIVER"]}>
                 <DriverDashboard/>
             </RouteGuard>
-            </>}/>
+            </>}>
+                </Route>
+
         </Routes>
 
         <ToastContainer position="bottom-right" />
