@@ -1,5 +1,6 @@
 import Sidebar from "../components/Dashboard/Sidebar.jsx";
 import {Box} from "@mui/material";
+import Topbar from "../components/Dashboard/Topbar.jsx";
 
 export default function MerchantDashboard(){
     return(
@@ -12,7 +13,7 @@ export default function MerchantDashboard(){
                 }}
             >
                 <Sidebar />
-
+                <Topbar/>
                 <Box
                     sx={{
                         ml: {
