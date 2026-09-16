@@ -31,7 +31,7 @@ export default function MerchantDashboard(){
     const[page, setPage] = useState(0)
     const [size, setSize]=useState(5)
     const [orderBy, setOrderBy] = useState("id")
-    const [order, setOrder] = useState("asc")
+    const [order, setOrder] = useState("desc")
     const [totalElements, setTotalElements] = useState(0)
 
 
