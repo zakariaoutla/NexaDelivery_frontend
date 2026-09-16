@@ -7,3 +7,7 @@ export const getMydelivery =(page, size, orderBy, order)=>{
 export const createDelivery=(deliveryData)=>{
     return axiosInstance.post("/delivery",deliveryData)
 }
+
+export const cancelDelivery = (deliveryId)=>{
+    return axiosInstance.put(`/delivery/${deliveryId}/cancel`)
+}

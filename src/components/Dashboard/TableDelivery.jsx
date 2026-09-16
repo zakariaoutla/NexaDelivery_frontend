@@ -1,12 +1,8 @@
 import {
     Box,
     Chip,
-    Paper,
-    Table,
     TableBody,
     TableCell,
-    TableContainer,
-    TableHead,
     TableRow,
     Typography,
 } from "@mui/material";
