@@ -25,6 +25,7 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import { AuthContext } from "../../Config/AuthContext.jsx";
 
 const Topbar = () => {
+
     const { user, logout } = useContext(AuthContext);
 
     const navigate = useNavigate();
@@ -36,8 +37,9 @@ const Topbar = () => {
     const openUserMenu = Boolean(anchorEl);
     const openNotificationMenu = Boolean(notificationAnchor);
 
-    // temporaire
     const notificationCount = 3;
+
+
 
     const handleOpenUserMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -47,6 +49,8 @@ const Topbar = () => {
         setAnchorEl(null);
     };
 
+
+
     const handleOpenNotifications = (event) => {
         setNotificationAnchor(event.currentTarget);
     };
@@ -55,25 +59,35 @@ const Topbar = () => {
         setNotificationAnchor(null);
     };
 
+
+
     const handleProfile = () => {
         handleCloseUserMenu();
         navigate("/merchant/profile");
     };
+
+
 
     const handleLogout = () => {
         handleCloseUserMenu();
         logout();
     };
 
+
+
     const handleSearch = (e) => {
+
         e.preventDefault();
 
         if (!search.trim()) return;
 
         navigate(
-            `/merchant/deliveries?search=${encodeURIComponent(search.trim())}`
+            `/merchant/deliveries?search=${encodeURIComponent(
+                search.trim()
+            )}`
         );
     };
+
 
     return (
         <AppBar
@@ -81,6 +95,7 @@ const Topbar = () => {
             elevation={0}
             sx={{
                 bgcolor: "#FFFFFF",
+
                 color: "#0B1F3A",
 
                 borderBottom: "1px solid #E5E7EB",
@@ -98,6 +113,7 @@ const Topbar = () => {
                 zIndex: 1100,
             }}
         >
+
             <Toolbar
                 sx={{
                     minHeight: "72px !important",
@@ -108,11 +124,16 @@ const Topbar = () => {
                         md: 4,
                     },
 
-                    gap: 2,
+                    display: "flex",
+
+                    alignItems: "center",
+
+                    gap: {
+                        xs: 1,
+                        sm: 2,
+                    },
                 }}
             >
-
-                {/* ================= SEARCH DESKTOP ================= */}
 
                 <Box
                     component="form"
@@ -126,16 +147,19 @@ const Topbar = () => {
                         alignItems: "center",
 
                         width: {
-                            sm: "300px",
-                            md: "360px",
+                            sm: "280px",
+                            md: "340px",
                             lg: "420px",
                         },
+
+                        flexShrink: 0,
 
                         height: "42px",
 
                         bgcolor: "#F7F9FC",
 
                         border: "1px solid #E2E8F0",
+
                         borderRadius: "10px",
 
                         px: 1.5,
@@ -144,363 +168,562 @@ const Topbar = () => {
 
                         "&:focus-within": {
                             bgcolor: "#FFFFFF",
+
                             borderColor: "#FF6B00",
-                            boxShadow: "0 0 0 3px rgba(255,107,0,0.08)",
+
+                            boxShadow:
+                                "0 0 0 3px rgba(255,107,0,0.08)",
                         },
                     }}
                 >
+
                     <SearchRoundedIcon
                         sx={{
                             color: "#94A3B8",
+
                             fontSize: "21px",
+
                             mr: 1,
                         }}
                     />
 
                     <InputBase
                         fullWidth
+
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+
+                        onChange={(e) =>
+                            setSearch(e.target.value)
+                        }
+
                         placeholder="Rechercher une livraison..."
+
                         sx={{
                             fontSize: "13px",
+
                             color: "#0B1F3A",
 
                             "& input::placeholder": {
                                 color: "#94A3B8",
+
                                 opacity: 1,
                             },
                         }}
                     />
+
                 </Box>
 
 
-                {/* ================= MOBILE TITLE ================= */}
+
 
                 <Box
                     sx={{
                         display: {
-                            xs: "block",
+                            xs: "flex",
                             sm: "none",
+                        },
+
+                        alignItems: "center",
+
+                        flex: 1,
+
+                        minWidth: 0,
+                    }}
+                >
+
+                    <Box
+                        component="img"
+
+                        src="/loginexadeliveryBlack.png"
+
+                        alt="NexaDelivery"
+
+                        sx={{
+                            width: {
+                                xs: "170px",
+                            },
+
+                            height: "auto",
+
+                            maxHeight: "60px",
+
+                            objectFit: "contain",
+
+                            objectPosition: "left center",
+
+                            display: "block",
+                        }}
+                    />
+
+                </Box>
+                
+                <Box
+                    sx={{
+                        display: {
+                            xs: "none",
+                            sm: "block",
                         },
 
                         flex: 1,
                     }}
-                >
-                    <Typography
-                        sx={{
-                            fontSize: "14px",
-                            fontWeight: 700,
-                            color: "#0B1F3A",
-                        }}
-                    >
-                        Bonjour {user?.nom || ""}
-                    </Typography>
+                />
 
-                    <Typography
-                        sx={{
-                            fontSize: "10px",
-                            color: "#94A3B8",
-                        }}
-                    >
-                        Espace commerçant
-                    </Typography>
-                </Box>
-
-
-                {/* pousse les actions à droite */}
-
-                <Box sx={{ flex: 1 }} />
-
-
-                {/* ================= NOTIFICATIONS ================= */}
-
-                <IconButton
-                    onClick={handleOpenNotifications}
-                    sx={{
-                        width: 40,
-                        height: 40,
-
-                        bgcolor: "#F7F9FC",
-                        border: "1px solid #E5E7EB",
-
-                        color: "#475569",
-
-                        "&:hover": {
-                            bgcolor: "#FFF4EC",
-                            color: "#FF6B00",
-                            borderColor: "#FFD7BA",
-                        },
-                    }}
-                >
-                    <Badge
-                        badgeContent={notificationCount}
-                        color="error"
-                        max={9}
-                    >
-                        <NotificationsNoneRoundedIcon
-                            sx={{
-                                fontSize: "21px",
-                            }}
-                        />
-                    </Badge>
-                </IconButton>
-
-
-                {/* ================= USER ================= */}
 
                 <Box
-                    onClick={handleOpenUserMenu}
                     sx={{
                         display: "flex",
+
                         alignItems: "center",
 
-                        gap: 1,
-
-                        cursor: "pointer",
-
-                        pl: {
-                            xs: 0,
-                            sm: 0.5,
+                        gap: {
+                            xs: 1,
+                            md: 1.5,
                         },
 
-                        pr: {
-                            xs: 0,
-                            sm: 1,
-                        },
-
-                        py: 0.4,
-
-                        borderRadius: "10px",
-
-                        "&:hover": {
-                            bgcolor: "#F7F9FC",
-                        },
+                        flexShrink: 0,
                     }}
                 >
-                    <Avatar
+
+
+
+                    <IconButton
+                        onClick={handleOpenNotifications}
+
                         sx={{
-                            width: 38,
-                            height: 38,
+                            width: 40,
 
-                            bgcolor: "#FF6B00",
-                            color: "#FFFFFF",
+                            height: 40,
 
-                            fontSize: "15px",
-                            fontWeight: 700,
+                            bgcolor: "#F7F9FC",
+
+                            border: "1px solid #E5E7EB",
+
+                            color: "#475569",
+
+                            "&:hover": {
+                                bgcolor: "#FFF4EC",
+
+                                color: "#FF6B00",
+
+                                borderColor: "#FFD7BA",
+                            },
                         }}
                     >
-                        {user?.nom?.charAt(0)?.toUpperCase() || "M"}
-                    </Avatar>
+
+                        <Badge
+                            badgeContent={notificationCount}
+
+                            color="error"
+
+                            max={9}
+                        >
+
+                            <NotificationsNoneRoundedIcon
+                                sx={{
+                                    fontSize: "21px",
+                                }}
+                            />
+
+                        </Badge>
+
+                    </IconButton>
+
+
 
                     <Box
+                        onClick={handleOpenUserMenu}
+
                         sx={{
-                            display: {
-                                xs: "none",
-                                md: "block",
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            gap: 1,
+
+                            cursor: "pointer",
+
+                            px: {
+                                xs: 0,
+                                md: 1,
+                            },
+
+                            py: 0.4,
+
+                            borderRadius: "10px",
+
+                            transition: "0.2s",
+
+                            "&:hover": {
+                                bgcolor: "#F7F9FC",
                             },
                         }}
                     >
-                        <Typography
-                            sx={{
-                                fontSize: "13px",
-                                fontWeight: 700,
-                                lineHeight: 1.2,
-                                color: "#0B1F3A",
-                            }}
-                        >
-                            {user?.nom || "Merchant"}
-                        </Typography>
 
-                        <Typography
+
+                        <Avatar
                             sx={{
-                                fontSize: "10px",
-                                color: "#94A3B8",
+                                width: 38,
+
+                                height: 38,
+
+                                bgcolor: "#FF6B00",
+
+                                color: "#FFFFFF",
+
+                                fontSize: "15px",
+
+                                fontWeight: 700,
                             }}
                         >
-                            Commerçant
-                        </Typography>
+                            {user?.nom
+                                ?.charAt(0)
+                                ?.toUpperCase() || "M"}
+                        </Avatar>
+
+
+
+                        <Box
+                            sx={{
+                                display: {
+                                    xs: "none",
+                                    md: "block",
+                                },
+
+                                minWidth: "80px",
+                            }}
+                        >
+
+                            <Typography
+                                sx={{
+                                    fontSize: "13px",
+
+                                    fontWeight: 700,
+
+                                    lineHeight: 1.2,
+
+                                    color: "#0B1F3A",
+                                }}
+                            >
+                                {user?.nom || "Merchant"}
+                            </Typography>
+
+
+                            <Typography
+                                sx={{
+                                    fontSize: "10px",
+
+                                    color: "#94A3B8",
+
+                                    mt: 0.2,
+                                }}
+                            >
+                                Commerçant
+                            </Typography>
+
+                        </Box>
+
+
+
+
+                        <KeyboardArrowDownRoundedIcon
+                            sx={{
+                                display: {
+                                    xs: "none",
+                                    md: "block",
+                                },
+
+                                fontSize: "18px",
+
+                                color: "#64748B",
+                            }}
+                        />
+
                     </Box>
 
-                    <KeyboardArrowDownRoundedIcon
-                        sx={{
-                            display: {
-                                xs: "none",
-                                md: "block",
-                            },
-
-                            fontSize: "18px",
-                            color: "#64748B",
-                        }}
-                    />
                 </Box>
 
 
-                {/* ================= NOTIFICATION MENU ================= */}
 
                 <Menu
                     anchorEl={notificationAnchor}
+
                     open={openNotificationMenu}
+
                     onClose={handleCloseNotifications}
+
                     anchorOrigin={{
                         vertical: "bottom",
                         horizontal: "right",
                     }}
+
                     transformOrigin={{
                         vertical: "top",
                         horizontal: "right",
                     }}
+
                     slotProps={{
                         paper: {
                             sx: {
                                 mt: 1,
+
                                 width: {
                                     xs: "300px",
                                     sm: "340px",
                                 },
-                                maxWidth: "calc(100vw - 24px)",
+
+                                maxWidth:
+                                    "calc(100vw - 24px)",
+
                                 borderRadius: "12px",
-                                border: "1px solid #E5E7EB",
+
+                                border:
+                                    "1px solid #E5E7EB",
+
                                 boxShadow:
                                     "0 12px 35px rgba(15,23,42,0.12)",
                             },
                         },
                     }}
                 >
+
+
+
                     <Box
                         sx={{
                             px: 2,
+
                             py: 1.5,
+
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            justifyContent:
+                                "space-between",
                         }}
                     >
+
                         <Typography
                             sx={{
                                 fontSize: "14px",
+
                                 fontWeight: 700,
+
                                 color: "#0B1F3A",
                             }}
                         >
                             Notifications
                         </Typography>
+
+
+                        {notificationCount > 0 && (
+
+                            <Typography
+                                sx={{
+                                    fontSize: "11px",
+
+                                    color: "#FF6B00",
+
+                                    fontWeight: 600,
+                                }}
+                            >
+                                {notificationCount} nouvelles
+                            </Typography>
+
+                        )}
+
                     </Box>
+
 
                     <Divider />
 
-                    {/* TEMPORAIRE */}
+
+
+
                     <Box
                         sx={{
                             px: 2,
+
                             py: 3,
+
                             textAlign: "center",
                         }}
                     >
+
+                        <NotificationsNoneRoundedIcon
+                            sx={{
+                                fontSize: "32px",
+
+                                color: "#CBD5E1",
+
+                                mb: 1,
+                            }}
+                        />
+
                         <Typography
                             sx={{
                                 fontSize: "12px",
+
                                 color: "#94A3B8",
                             }}
                         >
                             Les notifications apparaîtront ici
                         </Typography>
+
                     </Box>
+
                 </Menu>
 
 
-                {/* ================= USER MENU ================= */}
+
 
                 <Menu
                     anchorEl={anchorEl}
+
                     open={openUserMenu}
+
                     onClose={handleCloseUserMenu}
+
                     anchorOrigin={{
                         vertical: "bottom",
                         horizontal: "right",
                     }}
+
                     transformOrigin={{
                         vertical: "top",
                         horizontal: "right",
                     }}
+
                     slotProps={{
                         paper: {
                             sx: {
                                 mt: 1,
-                                minWidth: "190px",
+
+                                minWidth: "200px",
+
                                 borderRadius: "12px",
-                                border: "1px solid #E5E7EB",
+
+                                border:
+                                    "1px solid #E5E7EB",
+
                                 boxShadow:
                                     "0 10px 30px rgba(15,23,42,0.12)",
                             },
                         },
                     }}
                 >
+
+
+
+
                     <Box
                         sx={{
                             px: 2,
+
                             py: 1.5,
                         }}
                     >
+
                         <Typography
                             sx={{
                                 fontSize: "13px",
+
                                 fontWeight: 700,
+
                                 color: "#0B1F3A",
                             }}
                         >
                             {user?.nom || "Merchant"}
                         </Typography>
 
+
                         <Typography
                             sx={{
                                 fontSize: "11px",
+
                                 color: "#94A3B8",
+
+                                mt: 0.2,
                             }}
                         >
                             Commerçant
                         </Typography>
+
                     </Box>
+
 
                     <Divider />
 
+
+
+
                     <MenuItem
                         onClick={handleProfile}
+
                         sx={{
                             py: 1.2,
+
                             fontSize: "13px",
+
+                            color: "#334155",
                         }}
                     >
+
                         <ListItemIcon>
+
                             <PersonOutlineRoundedIcon
                                 sx={{
                                     fontSize: "19px",
+
+                                    color: "#64748B",
                                 }}
                             />
+
                         </ListItemIcon>
 
                         Mon profil
+
                     </MenuItem>
+
+
+
 
                     <MenuItem
                         onClick={handleLogout}
+
                         sx={{
                             py: 1.2,
+
                             fontSize: "13px",
+
                             color: "#DC2626",
+
+                            "&:hover": {
+                                bgcolor: "#FEF2F2",
+                            },
                         }}
                     >
+
                         <ListItemIcon>
+
                             <LogoutRoundedIcon
                                 sx={{
                                     fontSize: "19px",
+
                                     color: "#DC2626",
                                 }}
                             />
+
                         </ListItemIcon>
 
                         Déconnexion
+
                     </MenuItem>
+
                 </Menu>
 
             </Toolbar>
+
         </AppBar>
     );
 };

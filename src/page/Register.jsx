@@ -66,13 +66,13 @@ function Register() {
                     businessName: formData.businessName,
                 })
             }
-            toast.success("done")
+            toast.success("Compte créé avec succès")
             navigate("/login")
 
 
         }catch (err){
             console.error(err)
-            toast.error("madazch")
+            toast.error("Erreur lors de l'inscription. Veuillez réessayer.")
         }
     };
 
