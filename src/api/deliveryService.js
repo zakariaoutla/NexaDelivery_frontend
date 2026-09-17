@@ -11,3 +11,7 @@ export const createDelivery=(deliveryData)=>{
 export const cancelDelivery = (deliveryId)=>{
     return axiosInstance.put(`/delivery/${deliveryId}/cancel`)
 }
+
+export const getMyDeliveryById = (id)=>{
+    return axiosInstance.get(`/delivery/${id}/me`)
+}

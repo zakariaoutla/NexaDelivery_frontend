@@ -478,7 +478,6 @@ const MyDeliveries = () => {
                                 }}
                             >
 
-                                {/* TABLE HEADER */}
 
                                 <TableHead>
 
@@ -534,7 +533,6 @@ const MyDeliveries = () => {
                                 </TableHead>
 
 
-                                {/* TABLE BODY */}
 
                                 <TableBody>
 
@@ -595,7 +593,6 @@ const MyDeliveries = () => {
                                                         hover
                                                     >
 
-                                                        {/* TRACKING */}
 
                                                         <TableCell>
 
@@ -612,7 +609,6 @@ const MyDeliveries = () => {
                                                         </TableCell>
 
 
-                                                        {/* CLIENT */}
 
                                                         <TableCell>
 
@@ -625,7 +621,6 @@ const MyDeliveries = () => {
                                                         </TableCell>
 
 
-                                                        {/* DESTINATION */}
 
                                                         <TableCell>
 
@@ -653,7 +648,6 @@ const MyDeliveries = () => {
                                                         </TableCell>
 
 
-                                                        {/* STATUS */}
 
                                                         <TableCell>
 
@@ -675,7 +669,6 @@ const MyDeliveries = () => {
                                                         </TableCell>
 
 
-                                                        {/* DATE */}
 
                                                         <TableCell>
 
@@ -690,7 +683,6 @@ const MyDeliveries = () => {
                                                         </TableCell>
 
 
-                                                        {/* ACTIONS */}
 
                                                         <TableCell
                                                             align="center"
@@ -705,7 +697,6 @@ const MyDeliveries = () => {
                                                                 }}
                                                             >
 
-                                                                {/* VIEW */}
 
                                                                 <Tooltip
                                                                     title="Voir les détails"
@@ -730,7 +721,6 @@ const MyDeliveries = () => {
                                                                 </Tooltip>
 
 
-                                                                {/* TRACK */}
 
                                                                 {canTrack(
                                                                     delivery.deliveryStatus
@@ -761,7 +751,6 @@ const MyDeliveries = () => {
                                                                 )}
 
 
-                                                                {/* CANCEL */}
 
                                                                 {canCancel(
                                                                     delivery.deliveryStatus
@@ -814,7 +803,6 @@ const MyDeliveries = () => {
                         </TableContainer>
 
 
-                        {/* ================= PAGINATION ================= */}
 
                         <TablePagination
                             component="div"
@@ -865,7 +853,6 @@ const MyDeliveries = () => {
                     }}
                 >
 
-                    {/* ICON */}
 
                     <Box
                         sx={{
@@ -954,7 +941,6 @@ const MyDeliveries = () => {
                     }}
                 >
 
-                    {/* RETOUR */}
 
                     <Button
                         fullWidth
@@ -975,10 +961,7 @@ const MyDeliveries = () => {
                     >
                         Retour
                     </Button>
-
-
-                    {/* CONFIRM CANCEL */}
-
+                    
                     <Button
                         fullWidth
                         variant="contained"

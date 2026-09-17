@@ -20,6 +20,7 @@ import MerchantLayout from "./layout/MerchantLayout.jsx";
 import CreateDelivery from "./page/merchant/CreateDelivery.jsx";
 import MyDeliveries from "./page/merchant/MyDeliveries.jsx";
 import MerchantProfile from "./page/merchant/MerchantProfile.jsx";
+import DeliveryDetails from "./page/merchant/DeliveryDetails.jsx";
 
 function App() {
 
@@ -59,7 +60,8 @@ function App() {
                 <Route path="deliveries/create" element={<CreateDelivery/>}/>
                 <Route path="deliveries" element={<MyDeliveries/>}/>
                 <Route path="profile" element={<MerchantProfile/>}/>
-
+                <Route path="deliveries/:id" element={<DeliveryDetails />}
+                />
                 </Route>
 
             <Route path="/driver" element={<>
