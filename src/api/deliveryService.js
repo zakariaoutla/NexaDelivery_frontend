@@ -15,3 +15,12 @@ export const cancelDelivery = (deliveryId)=>{
 export const getMyDeliveryById = (id)=>{
     return axiosInstance.get(`/delivery/${id}/me`)
 }
+
+export const updateMyDeliveryStatus = (deliveryId, deliveryStatus) => {
+    return axiosInstance.put(
+        `/delivery/${deliveryId}/my-status`,
+        {
+            deliveryStatus: deliveryStatus,
+        }
+    );
+};

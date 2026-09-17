@@ -40,7 +40,10 @@ const statusConfig = {
     },
 };
 
-export default function TableDelivery({ deliveries = [] }) {
+export default function TableDelivery({
+                                          deliveries = [],
+                                          renderActions = null,
+                                      }) {
 
     const formatDate = (date) => {
         if (!date) return "-";
@@ -52,126 +55,136 @@ export default function TableDelivery({ deliveries = [] }) {
         }).format(new Date(date));
     };
 
+    const colSpan = renderActions ? 6 : 5;
+
     return (
-                    <TableBody>
+        <TableBody>
 
-                        {deliveries.length === 0 ? (
+            {deliveries.length === 0 ? (
 
-                            <TableRow>
-                                <TableCell
-                                    colSpan={5}
+                <TableRow>
+                    <TableCell
+                        colSpan={colSpan}
+                        sx={{
+                            borderBottom: 0,
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                py: 5,
+                                textAlign: "center",
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontSize: "13px",
+                                    color: "#94A3B8",
+                                }}
+                            >
+                                Aucune livraison pour le moment.
+                            </Typography>
+                        </Box>
+                    </TableCell>
+                </TableRow>
+
+            ) : (
+
+                deliveries.map((delivery) => {
+
+                    const status =
+                        statusConfig[delivery.deliveryStatus] || {
+                            label: delivery.deliveryStatus,
+                            bgcolor: "#F1F5F9",
+                            color: "#64748B",
+                        };
+
+                    return (
+
+                        <TableRow
+                            key={delivery.id}
+                            hover
+                            sx={{
+                                "&:last-child td": {
+                                    borderBottom: 0,
+                                },
+                            }}
+                        >
+
+
+                            <TableCell>
+                                <Typography
                                     sx={{
-                                        borderBottom: 0,
+                                        fontSize: "12px",
+                                        fontWeight: 700,
+                                        color: "#0B1F3A",
                                     }}
                                 >
-                                    <Box
-                                        sx={{
-                                            py: 5,
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        <Typography
-                                            sx={{
-                                                fontSize: "13px",
-                                                color: "#94A3B8",
-                                            }}
-                                        >
-                                            Aucune livraison pour le moment.
-                                        </Typography>
-                                    </Box>
+                                    {delivery.trackingCode}
+                                </Typography>
+                            </TableCell>
+
+
+
+                            <TableCell>
+                                <Typography sx={bodyStyle}>
+                                    {delivery.clientName}
+                                </Typography>
+                            </TableCell>
+
+
+
+                            <TableCell>
+                                <Typography
+                                    sx={{
+                                        ...bodyStyle,
+                                        maxWidth: "200px",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                >
+                                    {delivery.dropAddress}
+                                </Typography>
+                            </TableCell>
+
+
+
+                            <TableCell>
+                                <Chip
+                                    label={status.label}
+                                    size="small"
+                                    sx={{
+                                        bgcolor: status.bgcolor,
+                                        color: status.color,
+                                        height: "25px",
+                                        borderRadius: "7px",
+                                        fontSize: "10px",
+                                        fontWeight: 700,
+                                    }}
+                                />
+                            </TableCell>
+
+
+
+                            <TableCell>
+                                <Typography sx={bodyStyle}>
+                                    {formatDate(delivery.createdAt)}
+                                </Typography>
+                            </TableCell>
+
+                            {renderActions && (
+                                <TableCell align="right">
+                                    {renderActions(delivery)}
                                 </TableCell>
-                            </TableRow>
+                            )}
 
-                        ) : (
+                        </TableRow>
+                    );
+                })
 
-                            deliveries.map((delivery) => {
+            )}
 
-                                const status =
-                                    statusConfig[delivery.deliveryStatus] || {
-                                        label: delivery.deliveryStatus,
-                                        bgcolor: "#F1F5F9",
-                                        color: "#64748B",
-                                    };
-
-                                return (
-                                    <TableRow
-                                        key={delivery.id}
-                                        hover
-                                        sx={{
-                                            "&:last-child td": {
-                                                borderBottom: 0,
-                                            },
-                                        }}
-                                    >
-
-
-                                        <TableCell>
-                                            <Typography
-                                                sx={{
-                                                    fontSize: "12px",
-                                                    fontWeight: 700,
-                                                    color: "#0B1F3A",
-                                                }}
-                                            >
-                                                {delivery.trackingCode}
-                                            </Typography>
-                                        </TableCell>
-
-
-
-                                        <TableCell>
-                                            <Typography sx={bodyStyle}>
-                                                {delivery.clientName}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Typography
-                                                sx={{
-                                                    ...bodyStyle,
-                                                    maxWidth: "200px",
-                                                    overflow: "hidden",
-                                                    textOverflow: "ellipsis",
-                                                    whiteSpace: "nowrap",
-                                                }}
-                                            >
-                                                {delivery.dropAddress}
-                                            </Typography>
-                                        </TableCell>
-
-
-
-                                        <TableCell>
-                                            <Chip
-                                                label={status.label}
-                                                size="small"
-                                                sx={{
-                                                    bgcolor: status.bgcolor,
-                                                    color: status.color,
-                                                    height: "25px",
-                                                    borderRadius: "7px",
-                                                    fontSize: "10px",
-                                                    fontWeight: 700,
-                                                }}
-                                            />
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Typography sx={bodyStyle}>
-                                                {
-                                                    formatDate(delivery.createdAt)
-                                                }
-
-                                            </Typography>
-                                        </TableCell>
-
-                                    </TableRow>
-                                );
-                            })
-
-                        )}
-
-                    </TableBody>
+        </TableBody>
     );
 }
 
