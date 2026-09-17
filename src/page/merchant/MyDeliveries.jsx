@@ -126,15 +126,11 @@ const MyDeliveries = () => {
 
     const [cancelLoading, setCancelLoading] = useState(null);
 
-    // Dialog
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
     const [selectedDelivery, setSelectedDelivery] = useState(null);
 
 
-    // ==============================
-    // FETCH DELIVERIES
-    // ==============================
 
     const fetchDeliveries = async () => {
 
@@ -184,9 +180,7 @@ const MyDeliveries = () => {
     ]);
 
 
-    // ==============================
-    // SORT
-    // ==============================
+
 
     const handleSort = (property) => {
 
@@ -206,9 +200,6 @@ const MyDeliveries = () => {
     };
 
 
-    // ==============================
-    // PAGINATION
-    // ==============================
 
     const handleChangePage = (
         event,
@@ -234,10 +225,6 @@ const MyDeliveries = () => {
     };
 
 
-    // ==============================
-    // OPEN CANCEL DIALOG
-    // ==============================
-
     const openCancelDialog = (delivery) => {
 
         setSelectedDelivery(delivery);
@@ -245,10 +232,6 @@ const MyDeliveries = () => {
         setCancelDialogOpen(true);
     };
 
-
-    // ==============================
-    // CLOSE CANCEL DIALOG
-    // ==============================
 
     const closeCancelDialog = () => {
 
@@ -261,10 +244,6 @@ const MyDeliveries = () => {
         setSelectedDelivery(null);
     };
 
-
-    // ==============================
-    // CANCEL DELIVERY
-    // ==============================
 
     const handleCancel = async () => {
 
@@ -309,10 +288,6 @@ const MyDeliveries = () => {
     };
 
 
-    // ==============================
-    // FORMAT DATE
-    // ==============================
-
     const formatDate = (date) => {
 
         if (!date) {
@@ -332,9 +307,7 @@ const MyDeliveries = () => {
     };
 
 
-    // ==============================
-    // TRACK PERMISSION
-    // ==============================
+
 
     const canTrack = (status) => {
 
@@ -346,10 +319,6 @@ const MyDeliveries = () => {
     };
 
 
-    // ==============================
-    // CANCEL PERMISSION
-    // ==============================
-
     const canCancel = (status) => {
 
         return status === "EN_ATTENTE";
@@ -360,7 +329,6 @@ const MyDeliveries = () => {
 
         <Box>
 
-            {/* ================= HEADER ================= */}
 
             <Box
                 sx={{
@@ -435,7 +403,6 @@ const MyDeliveries = () => {
             </Box>
 
 
-            {/* ================= TABLE ================= */}
 
             <Paper
                 elevation={0}
@@ -830,7 +797,6 @@ const MyDeliveries = () => {
             </Paper>
 
 
-            {/* ================= CANCEL DIALOG ================= */}
 
             <Dialog
                 open={cancelDialogOpen}
@@ -961,7 +927,7 @@ const MyDeliveries = () => {
                     >
                         Retour
                     </Button>
-                    
+
                     <Button
                         fullWidth
                         variant="contained"

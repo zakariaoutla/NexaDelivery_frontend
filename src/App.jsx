@@ -21,6 +21,7 @@ import CreateDelivery from "./page/merchant/CreateDelivery.jsx";
 import MyDeliveries from "./page/merchant/MyDeliveries.jsx";
 import MerchantProfile from "./page/merchant/MerchantProfile.jsx";
 import DeliveryDetails from "./page/merchant/DeliveryDetails.jsx";
+import DeliveryTracking from "./page/merchant/DeliveryTracking.jsx";
 
 function App() {
 
@@ -62,7 +63,13 @@ function App() {
                 <Route path="profile" element={<MerchantProfile/>}/>
                 <Route path="deliveries/:id" element={<DeliveryDetails />}
                 />
-                </Route>
+                <Route
+                    path="deliveries/:id/tracking"
+                    element={<DeliveryTracking />}
+                />
+
+            </Route>
+
 
             <Route path="/driver" element={<>
             <RouteGuard allowedRoles={["DRIVER"]}>
