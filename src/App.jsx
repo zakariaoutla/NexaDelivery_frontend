@@ -22,6 +22,7 @@ import MerchantProfile from "./page/merchant/MerchantProfile.jsx";
 import DeliveryDetails from "./page/merchant/DeliveryDetails.jsx";
 import DeliveryTracking from "./page/merchant/DeliveryTracking.jsx";
 import DriverDashboard from "./page/driver/DriverDashboard.jsx";
+import DriverDeliveries from "./page/driver/DriverDeliveries.jsx";
 
 function App() {
 
@@ -78,6 +79,7 @@ function App() {
             </RouteGuard>
             </>}>
                 <Route index element={<DriverDashboard/>}/>
+                <Route path="deliveries" element={<DriverDeliveries/>}/>
 
             </Route>
 
