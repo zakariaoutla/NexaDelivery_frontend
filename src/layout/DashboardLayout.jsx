@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Dashboard/Sidebar.jsx";
 import Topbar from "../components/Dashboard/Topbar.jsx";
 
-const MerchantLayout = () => {
+const DashboardLayout = () => {
     return (
         <Box
             sx={{
@@ -49,4 +49,4 @@ const MerchantLayout = () => {
     );
 };
 
-export default MerchantLayout;
+export default DashboardLayout;

@@ -15,13 +15,13 @@ import {ToastContainer} from "react-toastify";
 import RouteGuard from "./Config/RouteGuard.jsx";
 import AdminDashboard from "./page/AdminDashboard.jsx";
 import MerchantDashboard from "./page/merchant/MerchantDashboard.jsx";
-import DriverDashboard from "./page/DriverDashboard.jsx";
-import MerchantLayout from "./layout/MerchantLayout.jsx";
+import DashboardLayout from "./layout/DashboardLayout.jsx";
 import CreateDelivery from "./page/merchant/CreateDelivery.jsx";
 import MyDeliveries from "./page/merchant/MyDeliveries.jsx";
 import MerchantProfile from "./page/merchant/MerchantProfile.jsx";
 import DeliveryDetails from "./page/merchant/DeliveryDetails.jsx";
 import DeliveryTracking from "./page/merchant/DeliveryTracking.jsx";
+import DriverDashboard from "./page/driver/DriverDashboard.jsx";
 
 function App() {
 
@@ -54,7 +54,7 @@ function App() {
 
             <Route path="/merchant" element={<>
                <RouteGuard allowedRoles={["MERCHANT"]}>
-                   <MerchantLayout/>
+                   <DashboardLayout/>
                </RouteGuard>
             </>}>
                 <Route index element={<MerchantDashboard/>}/>
@@ -67,16 +67,19 @@ function App() {
                     path="deliveries/:id/tracking"
                     element={<DeliveryTracking />}
                 />
+                <Route path="profile" element={<MerchantProfile/>}/>
 
             </Route>
 
 
             <Route path="/driver" element={<>
             <RouteGuard allowedRoles={["DRIVER"]}>
-                <DriverDashboard/>
+                <DashboardLayout/>
             </RouteGuard>
             </>}>
-                </Route>
+                <Route index element={<DriverDashboard/>}/>
+
+            </Route>
 
         </Routes>
 

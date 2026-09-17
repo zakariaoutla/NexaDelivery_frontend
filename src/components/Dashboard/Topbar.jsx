@@ -1,5 +1,11 @@
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+    useContext,
+    useState,
+} from "react";
+
+import {
+    useNavigate,
+} from "react-router-dom";
 
 import {
     AppBar,
@@ -16,80 +22,175 @@ import {
     InputBase,
 } from "@mui/material";
 
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import SearchRoundedIcon
+    from "@mui/icons-material/SearchRounded";
 
-import { AuthContext } from "../../Config/AuthContext.jsx";
+import NotificationsNoneRoundedIcon
+    from "@mui/icons-material/NotificationsNoneRounded";
+
+import PersonOutlineRoundedIcon
+    from "@mui/icons-material/PersonOutlineRounded";
+
+import LogoutRoundedIcon
+    from "@mui/icons-material/LogoutRounded";
+
+import KeyboardArrowDownRoundedIcon
+    from "@mui/icons-material/KeyboardArrowDownRounded";
+
+import { AuthContext }
+    from "../../Config/AuthContext.jsx";
+
 
 const Topbar = () => {
 
-    const { user, logout } = useContext(AuthContext);
+    const {
+        user,
+        logout,
+    } = useContext(AuthContext);
 
     const navigate = useNavigate();
 
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [notificationAnchor, setNotificationAnchor] = useState(null);
-    const [search, setSearch] = useState("");
+    const [
+        anchorEl,
+        setAnchorEl,
+    ] = useState(null);
 
-    const openUserMenu = Boolean(anchorEl);
-    const openNotificationMenu = Boolean(notificationAnchor);
+    const [
+        notificationAnchor,
+        setNotificationAnchor,
+    ] = useState(null);
 
-    const notificationCount = 3;
+    const [
+        search,
+        setSearch,
+    ] = useState("");
 
 
+    const openUserMenu =
+        Boolean(anchorEl);
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorEl(event.currentTarget);
+    const openNotificationMenu =
+        Boolean(notificationAnchor);
+
+
+   const notificationCount = 3;
+
+    const roleConfig = {
+
+        MERCHANT: {
+            label: "Commerçant",
+            profilePath:
+                "/merchant/profile",
+            deliveriesPath:
+                "/merchant/deliveries",
+            searchPlaceholder:
+                "Rechercher une livraison...",
+            avatarFallback: "M",
+        },
+
+        DRIVER: {
+            label: "Livreur",
+            profilePath:
+                "/driver/profile",
+            deliveriesPath:
+                "/driver/deliveries",
+            searchPlaceholder:
+                "Rechercher une livraison...",
+            avatarFallback: "D",
+        },
+
+        ADMIN: {
+            label: "Administrateur",
+            profilePath:
+                "/admin/profile",
+            deliveriesPath:
+                "/admin/deliveries",
+            searchPlaceholder:
+                "Rechercher...",
+            avatarFallback: "A",
+        },
+
     };
 
-    const handleCloseUserMenu = () => {
-        setAnchorEl(null);
-    };
+
+    const currentRole =
+        roleConfig[user?.role] ||
+        roleConfig.MERCHANT;
 
 
+    const handleOpenUserMenu = (
+        event
+    ) => {
 
-    const handleOpenNotifications = (event) => {
-        setNotificationAnchor(event.currentTarget);
-    };
-
-    const handleCloseNotifications = () => {
-        setNotificationAnchor(null);
-    };
-
-
-
-    const handleProfile = () => {
-        handleCloseUserMenu();
-        navigate("/merchant/profile");
-    };
-
-
-
-    const handleLogout = () => {
-        handleCloseUserMenu();
-        logout();
-    };
-
-
-
-    const handleSearch = (e) => {
-
-        e.preventDefault();
-
-        if (!search.trim()) return;
-
-        navigate(
-            `/merchant/deliveries?search=${encodeURIComponent(
-                search.trim()
-            )}`
+        setAnchorEl(
+            event.currentTarget
         );
     };
 
 
+    const handleCloseUserMenu = () => {
+
+        setAnchorEl(null);
+    };
+
+    const handleOpenNotifications = (
+        event
+    ) => {
+
+        setNotificationAnchor(
+            event.currentTarget
+        );
+    };
+
+
+    const handleCloseNotifications = () => {
+
+        setNotificationAnchor(null);
+    };
+
+    const handleProfile = () => {
+
+        handleCloseUserMenu();
+
+        navigate(
+            currentRole.profilePath
+        );
+    };
+
+    const handleLogout = () => {
+
+        handleCloseUserMenu();
+
+        logout();
+    };
+
+    const handleSearch = (event) => {
+
+        event.preventDefault();
+
+        const searchValue =
+            search.trim();
+
+        if (!searchValue) {
+            return;
+        }
+
+        navigate(
+            `${currentRole.deliveriesPath}?search=${encodeURIComponent(
+                searchValue
+            )}`
+        );
+    };
+    
+    const avatarLetter =
+        user?.nom
+            ?.charAt(0)
+            ?.toUpperCase() ||
+        currentRole.avatarFallback;
+
+
     return (
+
         <AppBar
             position="fixed"
             elevation={0}
@@ -98,7 +199,8 @@ const Topbar = () => {
 
                 color: "#0B1F3A",
 
-                borderBottom: "1px solid #E5E7EB",
+                borderBottom:
+                    "1px solid #E5E7EB",
 
                 width: {
                     xs: "100%",
@@ -116,7 +218,8 @@ const Topbar = () => {
 
             <Toolbar
                 sx={{
-                    minHeight: "72px !important",
+                    minHeight:
+                        "72px !important",
 
                     px: {
                         xs: 2,
@@ -126,7 +229,8 @@ const Topbar = () => {
 
                     display: "flex",
 
-                    alignItems: "center",
+                    alignItems:
+                        "center",
 
                     gap: {
                         xs: 1,
@@ -137,14 +241,17 @@ const Topbar = () => {
 
                 <Box
                     component="form"
-                    onSubmit={handleSearch}
+                    onSubmit={
+                        handleSearch
+                    }
                     sx={{
                         display: {
                             xs: "none",
                             sm: "flex",
                         },
 
-                        alignItems: "center",
+                        alignItems:
+                            "center",
 
                         width: {
                             sm: "280px",
@@ -156,20 +263,26 @@ const Topbar = () => {
 
                         height: "42px",
 
-                        bgcolor: "#F7F9FC",
+                        bgcolor:
+                            "#F7F9FC",
 
-                        border: "1px solid #E2E8F0",
+                        border:
+                            "1px solid #E2E8F0",
 
-                        borderRadius: "10px",
+                        borderRadius:
+                            "10px",
 
                         px: 1.5,
 
-                        transition: "0.2s",
+                        transition:
+                            "0.2s",
 
                         "&:focus-within": {
-                            bgcolor: "#FFFFFF",
+                            bgcolor:
+                                "#FFFFFF",
 
-                            borderColor: "#FF6B00",
+                            borderColor:
+                                "#FF6B00",
 
                             boxShadow:
                                 "0 0 0 3px rgba(255,107,0,0.08)",
@@ -179,9 +292,11 @@ const Topbar = () => {
 
                     <SearchRoundedIcon
                         sx={{
-                            color: "#94A3B8",
+                            color:
+                                "#94A3B8",
 
-                            fontSize: "21px",
+                            fontSize:
+                                "21px",
 
                             mr: 1,
                         }}
@@ -189,30 +304,39 @@ const Topbar = () => {
 
                     <InputBase
                         fullWidth
-
                         value={search}
-
-                        onChange={(e) =>
-                            setSearch(e.target.value)
+                        onChange={(
+                            event
+                        ) =>
+                            setSearch(
+                                event
+                                    .target
+                                    .value
+                            )
                         }
-
-                        placeholder="Rechercher une livraison..."
-
+                        placeholder={
+                            currentRole
+                                .searchPlaceholder
+                        }
                         sx={{
-                            fontSize: "13px",
+                            fontSize:
+                                "13px",
 
-                            color: "#0B1F3A",
+                            color:
+                                "#0B1F3A",
 
-                            "& input::placeholder": {
-                                color: "#94A3B8",
+                            "& input::placeholder":
+                                {
+                                    color:
+                                        "#94A3B8",
 
-                                opacity: 1,
-                            },
+                                    opacity:
+                                        1,
+                                },
                         }}
                     />
 
                 </Box>
-
 
 
 
@@ -223,7 +347,8 @@ const Topbar = () => {
                             sm: "none",
                         },
 
-                        alignItems: "center",
+                        alignItems:
+                            "center",
 
                         flex: 1,
 
@@ -233,30 +358,33 @@ const Topbar = () => {
 
                     <Box
                         component="img"
-
                         src="/loginexadeliveryBlack.png"
-
                         alt="NexaDelivery"
-
                         sx={{
-                            width: {
-                                xs: "170px",
-                            },
+                            width:
+                                "170px",
 
-                            height: "auto",
+                            height:
+                                "auto",
 
-                            maxHeight: "60px",
+                            maxHeight:
+                                "60px",
 
-                            objectFit: "contain",
+                            objectFit:
+                                "contain",
 
-                            objectPosition: "left center",
+                            objectPosition:
+                                "left center",
 
-                            display: "block",
+                            display:
+                                "block",
                         }}
                     />
 
                 </Box>
-                
+
+
+
                 <Box
                     sx={{
                         display: {
@@ -273,7 +401,8 @@ const Topbar = () => {
                     sx={{
                         display: "flex",
 
-                        alignItems: "center",
+                        alignItems:
+                            "center",
 
                         gap: {
                             xs: 1,
@@ -285,42 +414,49 @@ const Topbar = () => {
                 >
 
 
-
                     <IconButton
-                        onClick={handleOpenNotifications}
-
+                        onClick={
+                            handleOpenNotifications
+                        }
                         sx={{
                             width: 40,
 
                             height: 40,
 
-                            bgcolor: "#F7F9FC",
+                            bgcolor:
+                                "#F7F9FC",
 
-                            border: "1px solid #E5E7EB",
+                            border:
+                                "1px solid #E5E7EB",
 
-                            color: "#475569",
+                            color:
+                                "#475569",
 
                             "&:hover": {
-                                bgcolor: "#FFF4EC",
+                                bgcolor:
+                                    "#FFF4EC",
 
-                                color: "#FF6B00",
+                                color:
+                                    "#FF6B00",
 
-                                borderColor: "#FFD7BA",
+                                borderColor:
+                                    "#FFD7BA",
                             },
                         }}
                     >
 
                         <Badge
-                            badgeContent={notificationCount}
-
+                            badgeContent={
+                                notificationCount
+                            }
                             color="error"
-
                             max={9}
                         >
 
                             <NotificationsNoneRoundedIcon
                                 sx={{
-                                    fontSize: "21px",
+                                    fontSize:
+                                        "21px",
                                 }}
                             />
 
@@ -331,16 +467,19 @@ const Topbar = () => {
 
 
                     <Box
-                        onClick={handleOpenUserMenu}
-
+                        onClick={
+                            handleOpenUserMenu
+                        }
                         sx={{
                             display: "flex",
 
-                            alignItems: "center",
+                            alignItems:
+                                "center",
 
                             gap: 1,
 
-                            cursor: "pointer",
+                            cursor:
+                                "pointer",
 
                             px: {
                                 xs: 0,
@@ -349,16 +488,18 @@ const Topbar = () => {
 
                             py: 0.4,
 
-                            borderRadius: "10px",
+                            borderRadius:
+                                "10px",
 
-                            transition: "0.2s",
+                            transition:
+                                "0.2s",
 
                             "&:hover": {
-                                bgcolor: "#F7F9FC",
+                                bgcolor:
+                                    "#F7F9FC",
                             },
                         }}
                     >
-
 
                         <Avatar
                             sx={{
@@ -366,20 +507,21 @@ const Topbar = () => {
 
                                 height: 38,
 
-                                bgcolor: "#FF6B00",
+                                bgcolor:
+                                    "#FF6B00",
 
-                                color: "#FFFFFF",
+                                color:
+                                    "#FFFFFF",
 
-                                fontSize: "15px",
+                                fontSize:
+                                    "15px",
 
-                                fontWeight: 700,
+                                fontWeight:
+                                    700,
                             }}
                         >
-                            {user?.nom
-                                ?.charAt(0)
-                                ?.toUpperCase() || "M"}
+                            {avatarLetter}
                         </Avatar>
-
 
 
                         <Box
@@ -389,40 +531,48 @@ const Topbar = () => {
                                     md: "block",
                                 },
 
-                                minWidth: "80px",
+                                minWidth:
+                                    "80px",
                             }}
                         >
 
                             <Typography
                                 sx={{
-                                    fontSize: "13px",
+                                    fontSize:
+                                        "13px",
 
-                                    fontWeight: 700,
+                                    fontWeight:
+                                        700,
 
-                                    lineHeight: 1.2,
+                                    lineHeight:
+                                        1.2,
 
-                                    color: "#0B1F3A",
+                                    color:
+                                        "#0B1F3A",
                                 }}
                             >
-                                {user?.nom || "Merchant"}
+                                {user?.nom ||
+                                    currentRole.label}
                             </Typography>
 
 
                             <Typography
                                 sx={{
-                                    fontSize: "10px",
+                                    fontSize:
+                                        "10px",
 
-                                    color: "#94A3B8",
+                                    color:
+                                        "#94A3B8",
 
                                     mt: 0.2,
                                 }}
                             >
-                                Commerçant
+                                {
+                                    currentRole.label
+                                }
                             </Typography>
 
                         </Box>
-
-
 
 
                         <KeyboardArrowDownRoundedIcon
@@ -432,9 +582,11 @@ const Topbar = () => {
                                     md: "block",
                                 },
 
-                                fontSize: "18px",
+                                fontSize:
+                                    "18px",
 
-                                color: "#64748B",
+                                color:
+                                    "#64748B",
                             }}
                         />
 
@@ -443,38 +595,47 @@ const Topbar = () => {
                 </Box>
 
 
-
                 <Menu
-                    anchorEl={notificationAnchor}
-
-                    open={openNotificationMenu}
-
-                    onClose={handleCloseNotifications}
-
+                    anchorEl={
+                        notificationAnchor
+                    }
+                    open={
+                        openNotificationMenu
+                    }
+                    onClose={
+                        handleCloseNotifications
+                    }
                     anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                    }}
+                        vertical:
+                            "bottom",
 
+                        horizontal:
+                            "right",
+                    }}
                     transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                    }}
+                        vertical:
+                            "top",
 
+                        horizontal:
+                            "right",
+                    }}
                     slotProps={{
                         paper: {
                             sx: {
                                 mt: 1,
 
                                 width: {
-                                    xs: "300px",
-                                    sm: "340px",
+                                    xs:
+                                        "300px",
+                                    sm:
+                                        "340px",
                                 },
 
                                 maxWidth:
                                     "calc(100vw - 24px)",
 
-                                borderRadius: "12px",
+                                borderRadius:
+                                    "12px",
 
                                 border:
                                     "1px solid #E5E7EB",
@@ -486,17 +647,17 @@ const Topbar = () => {
                     }}
                 >
 
-
-
                     <Box
                         sx={{
                             px: 2,
 
                             py: 1.5,
 
-                            display: "flex",
+                            display:
+                                "flex",
 
-                            alignItems: "center",
+                            alignItems:
+                                "center",
 
                             justifyContent:
                                 "space-between",
@@ -505,39 +666,47 @@ const Topbar = () => {
 
                         <Typography
                             sx={{
-                                fontSize: "14px",
+                                fontSize:
+                                    "14px",
 
-                                fontWeight: 700,
+                                fontWeight:
+                                    700,
 
-                                color: "#0B1F3A",
+                                color:
+                                    "#0B1F3A",
                             }}
                         >
                             Notifications
                         </Typography>
 
 
-                        {notificationCount > 0 && (
+                        {notificationCount >
+                            0 && (
 
-                            <Typography
-                                sx={{
-                                    fontSize: "11px",
+                                <Typography
+                                    sx={{
+                                        fontSize:
+                                            "11px",
 
-                                    color: "#FF6B00",
+                                        color:
+                                            "#FF6B00",
 
-                                    fontWeight: 600,
-                                }}
-                            >
-                                {notificationCount} nouvelles
-                            </Typography>
+                                        fontWeight:
+                                            600,
+                                    }}
+                                >
+                                    {
+                                        notificationCount
+                                    }{" "}
+                                    nouvelles
+                                </Typography>
 
-                        )}
+                            )}
 
                     </Box>
 
 
                     <Divider />
-
-
 
 
                     <Box
@@ -546,15 +715,18 @@ const Topbar = () => {
 
                             py: 3,
 
-                            textAlign: "center",
+                            textAlign:
+                                "center",
                         }}
                     >
 
                         <NotificationsNoneRoundedIcon
                             sx={{
-                                fontSize: "32px",
+                                fontSize:
+                                    "32px",
 
-                                color: "#CBD5E1",
+                                color:
+                                    "#CBD5E1",
 
                                 mb: 1,
                             }}
@@ -562,12 +734,15 @@ const Topbar = () => {
 
                         <Typography
                             sx={{
-                                fontSize: "12px",
+                                fontSize:
+                                    "12px",
 
-                                color: "#94A3B8",
+                                color:
+                                    "#94A3B8",
                             }}
                         >
-                            Les notifications apparaîtront ici
+                            Les notifications
+                            apparaîtront ici
                         </Typography>
 
                     </Box>
@@ -575,33 +750,40 @@ const Topbar = () => {
                 </Menu>
 
 
-
-
                 <Menu
-                    anchorEl={anchorEl}
-
-                    open={openUserMenu}
-
-                    onClose={handleCloseUserMenu}
-
+                    anchorEl={
+                        anchorEl
+                    }
+                    open={
+                        openUserMenu
+                    }
+                    onClose={
+                        handleCloseUserMenu
+                    }
                     anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                    }}
+                        vertical:
+                            "bottom",
 
+                        horizontal:
+                            "right",
+                    }}
                     transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                    }}
+                        vertical:
+                            "top",
 
+                        horizontal:
+                            "right",
+                    }}
                     slotProps={{
                         paper: {
                             sx: {
                                 mt: 1,
 
-                                minWidth: "200px",
+                                minWidth:
+                                    "200px",
 
-                                borderRadius: "12px",
+                                borderRadius:
+                                    "12px",
 
                                 border:
                                     "1px solid #E5E7EB",
@@ -614,8 +796,6 @@ const Topbar = () => {
                 >
 
 
-
-
                     <Box
                         sx={{
                             px: 2,
@@ -626,27 +806,35 @@ const Topbar = () => {
 
                         <Typography
                             sx={{
-                                fontSize: "13px",
+                                fontSize:
+                                    "13px",
 
-                                fontWeight: 700,
+                                fontWeight:
+                                    700,
 
-                                color: "#0B1F3A",
+                                color:
+                                    "#0B1F3A",
                             }}
                         >
-                            {user?.nom || "Merchant"}
+                            {user?.nom ||
+                                currentRole.label}
                         </Typography>
 
 
                         <Typography
                             sx={{
-                                fontSize: "11px",
+                                fontSize:
+                                    "11px",
 
-                                color: "#94A3B8",
+                                color:
+                                    "#94A3B8",
 
                                 mt: 0.2,
                             }}
                         >
-                            Commerçant
+                            {
+                                currentRole.label
+                            }
                         </Typography>
 
                     </Box>
@@ -656,16 +844,18 @@ const Topbar = () => {
 
 
 
-
                     <MenuItem
-                        onClick={handleProfile}
-
+                        onClick={
+                            handleProfile
+                        }
                         sx={{
                             py: 1.2,
 
-                            fontSize: "13px",
+                            fontSize:
+                                "13px",
 
-                            color: "#334155",
+                            color:
+                                "#334155",
                         }}
                     >
 
@@ -673,9 +863,11 @@ const Topbar = () => {
 
                             <PersonOutlineRoundedIcon
                                 sx={{
-                                    fontSize: "19px",
+                                    fontSize:
+                                        "19px",
 
-                                    color: "#64748B",
+                                    color:
+                                        "#64748B",
                                 }}
                             />
 
@@ -687,19 +879,22 @@ const Topbar = () => {
 
 
 
-
                     <MenuItem
-                        onClick={handleLogout}
-
+                        onClick={
+                            handleLogout
+                        }
                         sx={{
                             py: 1.2,
 
-                            fontSize: "13px",
+                            fontSize:
+                                "13px",
 
-                            color: "#DC2626",
+                            color:
+                                "#DC2626",
 
                             "&:hover": {
-                                bgcolor: "#FEF2F2",
+                                bgcolor:
+                                    "#FEF2F2",
                             },
                         }}
                     >
@@ -708,9 +903,11 @@ const Topbar = () => {
 
                             <LogoutRoundedIcon
                                 sx={{
-                                    fontSize: "19px",
+                                    fontSize:
+                                        "19px",
 
-                                    color: "#DC2626",
+                                    color:
+                                        "#DC2626",
                                 }}
                             />
 
