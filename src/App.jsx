@@ -23,6 +23,7 @@ import DeliveryDetails from "./page/merchant/DeliveryDetails.jsx";
 import DeliveryTracking from "./page/merchant/DeliveryTracking.jsx";
 import DriverDashboard from "./page/driver/DriverDashboard.jsx";
 import DriverDeliveries from "./page/driver/DriverDeliveries.jsx";
+import DriverProfile from "./page/driver/DriverProfile.jsx";
 
 function App() {
 
@@ -80,6 +81,10 @@ function App() {
             </>}>
                 <Route index element={<DriverDashboard/>}/>
                 <Route path="deliveries" element={<DriverDeliveries/>}/>
+                <Route
+                    path="profile"
+                    element={<DriverProfile />}
+                />
 
             </Route>
 

@@ -14,3 +14,16 @@ export const getMyDriverDeliveries = (
         },
     });
 };
+
+export const getMyDriverProfile = () => {
+    return axiosInstance.get("/driver/me");
+};
+
+export const updateMyDriverStatus = (driverStatus) => {
+    return axiosInstance.put(
+        "/driver/me/status",
+        {
+            driverStatus: driverStatus,
+        }
+    );
+};
