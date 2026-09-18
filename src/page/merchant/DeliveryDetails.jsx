@@ -8,6 +8,8 @@ import {
     CircularProgress,
     Divider,
     Paper,
+    Rating,
+    TextField,
     Typography,
 } from "@mui/material";
 
@@ -19,12 +21,20 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MyLocationRoundedIcon from "@mui/icons-material/MyLocationRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 import { toast } from "react-toastify";
 
 import {
     getMyDeliveryById,
 } from "../../api/deliveryService.js";
+
+import {
+    createRating,
+    getRatingByDelivery,
+    updateRating,
+} from "../../api/ratingService.js";
 
 
 const statusConfig = {
@@ -76,6 +86,19 @@ const DeliveryDetails = () => {
     const [delivery, setDelivery] = useState(null);
 
     const [loading, setLoading] = useState(true);
+    
+
+    const [rating, setRating] = useState(null);
+
+    const [score, setScore] = useState(0);
+
+    const [comment, setComment] = useState("");
+
+    const [ratingLoading, setRatingLoading] =
+        useState(false);
+
+    const [editingRating, setEditingRating] =
+        useState(false);
 
 
     useEffect(() => {
@@ -89,7 +112,20 @@ const DeliveryDetails = () => {
                 const response =
                     await getMyDeliveryById(id);
 
-                setDelivery(response.data);
+                const deliveryData =
+                    response.data;
+
+                setDelivery(deliveryData);
+
+
+                if (
+                    deliveryData.deliveryStatus ===
+                    "LIVREE"
+                ) {
+
+                    await fetchRating();
+
+                }
 
             } catch (error) {
 
@@ -106,6 +142,7 @@ const DeliveryDetails = () => {
             } finally {
 
                 setLoading(false);
+
             }
         };
 
@@ -114,6 +151,189 @@ const DeliveryDetails = () => {
 
     }, [id, navigate]);
 
+
+    const fetchRating = async () => {
+
+        try {
+
+            const response =
+                await getRatingByDelivery(id);
+
+            const ratingData =
+                response.data;
+
+            setRating(ratingData);
+
+            setScore(
+                ratingData.score || 0
+            );
+
+            setComment(
+                ratingData.comment || ""
+            );
+
+        } catch (error) {
+
+            if (error.response?.status === 404) {
+
+                setRating(null);
+                setScore(0);
+                setComment("");
+
+                return;
+            }
+
+            const message =
+                error.response?.data?.message || "";
+
+            if (
+                message.includes(
+                    "pas encore d'évaluation"
+                )
+            ) {
+
+                setRating(null);
+                setScore(0);
+                setComment("");
+
+                return;
+            }
+
+            console.error(
+                "Erreur chargement rating:",
+                error
+            );
+        }
+    };
+
+
+    // =========================
+    // CREATE / UPDATE RATING
+    // =========================
+
+    const handleRatingSubmit = async () => {
+
+        if (!score) {
+
+            toast.error(
+                "Veuillez sélectionner une note."
+            );
+
+            return;
+        }
+
+
+        if (!comment.trim()) {
+
+            toast.error(
+                "Veuillez ajouter un commentaire."
+            );
+
+            return;
+        }
+
+
+        try {
+
+            setRatingLoading(true);
+
+
+            const payload = {
+                score,
+                comment: comment.trim(),
+            };
+
+
+            let response;
+
+
+            if (rating) {
+
+                response =
+                    await updateRating(
+                        rating.id,
+                        payload
+                    );
+
+                toast.success(
+                    "Évaluation modifiée avec succès."
+                );
+
+            } else {
+
+                response =
+                    await createRating(
+                        delivery.id,
+                        payload
+                    );
+
+                toast.success(
+                    "Évaluation enregistrée avec succès."
+                );
+
+            }
+
+
+            setRating(
+                response.data
+            );
+
+            setScore(
+                response.data.score
+            );
+
+            setComment(
+                response.data.comment
+            );
+
+            setEditingRating(false);
+
+        } catch (error) {
+
+            console.error(
+                "Erreur évaluation:",
+                error
+            );
+
+            const message =
+                error.response?.data?.message ||
+                "Impossible d'enregistrer l'évaluation.";
+
+            toast.error(message);
+
+        } finally {
+
+            setRatingLoading(false);
+
+        }
+    };
+
+
+    // =========================
+    // CANCEL EDIT
+    // =========================
+
+    const handleCancelRatingEdit = () => {
+
+        if (!rating) {
+            return;
+        }
+
+        setScore(
+            rating.score
+        );
+
+        setComment(
+            rating.comment
+        );
+
+        setEditingRating(false);
+    };
+
+
+    // =========================
+    // FORMAT DATE
+    // =========================
 
     const formatDate = (date) => {
 
@@ -136,6 +356,10 @@ const DeliveryDetails = () => {
     };
 
 
+    // =========================
+    // TRACKING
+    // =========================
+
     const canTrack = (status) => {
 
         return [
@@ -145,6 +369,10 @@ const DeliveryDetails = () => {
         ].includes(status);
     };
 
+
+    // =========================
+    // LOADING
+    // =========================
 
     if (loading) {
 
@@ -158,11 +386,13 @@ const DeliveryDetails = () => {
                     justifyContent: "center",
                 }}
             >
+
                 <CircularProgress
                     sx={{
                         color: "#FF6B00",
                     }}
                 />
+
             </Box>
 
         );
@@ -175,8 +405,11 @@ const DeliveryDetails = () => {
 
 
     const status =
-        statusConfig[delivery.deliveryStatus] || {
-            label: delivery.deliveryStatus,
+        statusConfig[
+            delivery.deliveryStatus
+            ] || {
+            label:
+            delivery.deliveryStatus,
             bgcolor: "#F1F5F9",
             color: "#64748B",
         };
@@ -185,8 +418,6 @@ const DeliveryDetails = () => {
     return (
 
         <Box>
-
-            {/* BACK */}
 
             <Button
                 startIcon={
@@ -212,13 +443,12 @@ const DeliveryDetails = () => {
             </Button>
 
 
-            {/* HEADER */}
-
             <Box
                 sx={{
                     mb: 4,
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent:
+                        "space-between",
                     alignItems: {
                         xs: "flex-start",
                         sm: "center",
@@ -270,8 +500,10 @@ const DeliveryDetails = () => {
                     <Chip
                         label={status.label}
                         sx={{
-                            bgcolor: status.bgcolor,
-                            color: status.color,
+                            bgcolor:
+                            status.bgcolor,
+                            color:
+                            status.color,
                             fontWeight: 700,
                             borderRadius: "8px",
                         }}
@@ -293,16 +525,23 @@ const DeliveryDetails = () => {
                                 )
                             }
                             sx={{
-                                bgcolor: "#FF6B00",
-                                color: "#FFFFFF",
-                                textTransform: "none",
+                                bgcolor:
+                                    "#FF6B00",
+                                color:
+                                    "#FFFFFF",
+                                textTransform:
+                                    "none",
                                 fontWeight: 700,
-                                borderRadius: "9px",
-                                boxShadow: "none",
+                                borderRadius:
+                                    "9px",
+                                boxShadow:
+                                    "none",
 
                                 "&:hover": {
-                                    bgcolor: "#E65F00",
-                                    boxShadow: "none",
+                                    bgcolor:
+                                        "#E65F00",
+                                    boxShadow:
+                                        "none",
                                 },
                             }}
                         >
@@ -316,8 +555,6 @@ const DeliveryDetails = () => {
             </Box>
 
 
-            {/* MAIN GRID */}
-
             <Box
                 sx={{
                     display: "grid",
@@ -329,7 +566,8 @@ const DeliveryDetails = () => {
                 }}
             >
 
-                {/* DELIVERY INFORMATION */}
+
+
 
                 <Paper
                     elevation={0}
@@ -356,7 +594,8 @@ const DeliveryDetails = () => {
                     <Divider
                         sx={{
                             my: 2.5,
-                            borderColor: "#F1F5F9",
+                            borderColor:
+                                "#F1F5F9",
                         }}
                     />
 
@@ -423,7 +662,8 @@ const DeliveryDetails = () => {
                     <Divider
                         sx={{
                             my: 3,
-                            borderColor: "#F1F5F9",
+                            borderColor:
+                                "#F1F5F9",
                         }}
                     />
 
@@ -435,7 +675,8 @@ const DeliveryDetails = () => {
                                 fontSize: "12px",
                                 fontWeight: 700,
                                 color: "#94A3B8",
-                                textTransform: "uppercase",
+                                textTransform:
+                                    "uppercase",
                                 mb: 1,
                             }}
                         >
@@ -460,7 +701,7 @@ const DeliveryDetails = () => {
                 </Paper>
 
 
-                {/* CLIENT */}
+
 
                 <Paper
                     elevation={0}
@@ -487,7 +728,8 @@ const DeliveryDetails = () => {
                     <Divider
                         sx={{
                             my: 2.5,
-                            borderColor: "#F1F5F9",
+                            borderColor:
+                                "#F1F5F9",
                         }}
                     />
 
@@ -495,7 +737,8 @@ const DeliveryDetails = () => {
                     <Box
                         sx={{
                             display: "flex",
-                            flexDirection: "column",
+                            flexDirection:
+                                "column",
                             gap: 3,
                         }}
                     >
@@ -538,14 +781,385 @@ const DeliveryDetails = () => {
 
             </Box>
 
+
+
+
+            {delivery.deliveryStatus ===
+                "LIVREE" && (
+
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            mt: 3,
+                            border:
+                                "1px solid #E5E7EB",
+                            borderRadius: "14px",
+                            bgcolor: "#FFFFFF",
+                            p: {
+                                xs: 2.5,
+                                md: 3,
+                            },
+                        }}
+                    >
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent:
+                                    "space-between",
+                                alignItems:
+                                    "center",
+                                gap: 2,
+                            }}
+                        >
+
+                            <SectionTitle
+                                icon={
+                                    <StarRoundedIcon />
+                                }
+                                title={
+                                    rating
+                                        ? "Votre évaluation"
+                                        : "Évaluer le chauffeur"
+                                }
+                            />
+
+
+                            {rating &&
+                                !editingRating && (
+
+                                    <Button
+                                        startIcon={
+                                            <EditOutlinedIcon />
+                                        }
+                                        onClick={() =>
+                                            setEditingRating(
+                                                true
+                                            )
+                                        }
+                                        sx={{
+                                            color:
+                                                "#FF6B00",
+                                            textTransform:
+                                                "none",
+                                            fontWeight:
+                                                700,
+                                        }}
+                                    >
+                                        Modifier
+                                    </Button>
+
+                                )}
+
+                        </Box>
+
+
+                        <Divider
+                            sx={{
+                                my: 2.5,
+                                borderColor:
+                                    "#F1F5F9",
+                            }}
+                        />
+
+
+                        {rating &&
+                        !editingRating ? (
+
+
+
+                            <Box>
+
+                                <Box
+                                    sx={{
+                                        display:
+                                            "flex",
+                                        alignItems:
+                                            "center",
+                                        gap: 1.5,
+                                        mb: 2,
+                                    }}
+                                >
+
+                                    <Rating
+                                        value={
+                                            rating.score
+                                        }
+                                        readOnly
+                                        size="large"
+                                    />
+
+                                    <Typography
+                                        sx={{
+                                            fontSize:
+                                                "14px",
+                                            fontWeight:
+                                                700,
+                                            color:
+                                                "#0B1F3A",
+                                        }}
+                                    >
+                                        {rating.score} / 5
+                                    </Typography>
+
+                                </Box>
+
+
+                                <Typography
+                                    sx={{
+                                        fontSize:
+                                            "12px",
+                                        fontWeight:
+                                            700,
+                                        color:
+                                            "#94A3B8",
+                                        textTransform:
+                                            "uppercase",
+                                        mb: 1,
+                                    }}
+                                >
+                                    Commentaire
+                                </Typography>
+
+
+                                <Typography
+                                    sx={{
+                                        fontSize:
+                                            "14px",
+                                        color:
+                                            "#475569",
+                                        lineHeight:
+                                            1.7,
+                                    }}
+                                >
+                                    {rating.comment}
+                                </Typography>
+
+
+                                {rating.createdAt && (
+
+                                    <Typography
+                                        sx={{
+                                            mt: 2,
+                                            fontSize:
+                                                "11px",
+                                            color:
+                                                "#94A3B8",
+                                        }}
+                                    >
+                                        Évalué le{" "}
+                                        {formatDate(
+                                            rating.createdAt
+                                        )}
+                                    </Typography>
+
+                                )}
+
+                            </Box>
+
+                        ) : (
+
+
+
+                            <Box
+                                sx={{
+                                    maxWidth:
+                                        "650px",
+                                }}
+                            >
+
+                                <Typography
+                                    sx={{
+                                        fontSize:
+                                            "13px",
+                                        fontWeight:
+                                            600,
+                                        color:
+                                            "#475569",
+                                        mb: 1,
+                                    }}
+                                >
+                                    Note
+                                </Typography>
+
+
+                                <Box
+                                    sx={{
+                                        display:
+                                            "flex",
+                                        alignItems:
+                                            "center",
+                                        gap: 1.5,
+                                        mb: 3,
+                                    }}
+                                >
+
+                                    <Rating
+                                        value={score}
+                                        onChange={(
+                                            event,
+                                            newValue
+                                        ) =>
+                                            setScore(
+                                                newValue ||
+                                                0
+                                            )
+                                        }
+                                        size="large"
+                                    />
+
+                                    {score > 0 && (
+
+                                        <Typography
+                                            sx={{
+                                                fontSize:
+                                                    "13px",
+                                                fontWeight:
+                                                    700,
+                                                color:
+                                                    "#0B1F3A",
+                                            }}
+                                        >
+                                            {score} / 5
+                                        </Typography>
+
+                                    )}
+
+                                </Box>
+
+
+                                <TextField
+                                    label="Commentaire"
+                                    value={comment}
+                                    onChange={(
+                                        event
+                                    ) =>
+                                        setComment(
+                                            event.target
+                                                .value
+                                        )
+                                    }
+                                    placeholder="Partagez votre expérience avec ce chauffeur..."
+                                    multiline
+                                    rows={4}
+                                    fullWidth
+                                    required
+                                />
+
+
+                                <Box
+                                    sx={{
+                                        mt: 2.5,
+                                        display:
+                                            "flex",
+                                        justifyContent:
+                                            "flex-end",
+                                        gap: 1,
+                                    }}
+                                >
+
+                                    {rating && (
+
+                                        <Button
+                                            disabled={
+                                                ratingLoading
+                                            }
+                                            onClick={
+                                                handleCancelRatingEdit
+                                            }
+                                            sx={{
+                                                color:
+                                                    "#64748B",
+                                                textTransform:
+                                                    "none",
+                                                fontWeight:
+                                                    700,
+                                            }}
+                                        >
+                                            Annuler
+                                        </Button>
+
+                                    )}
+
+
+                                    <Button
+                                        variant="contained"
+                                        disabled={
+                                            ratingLoading
+                                        }
+                                        onClick={
+                                            handleRatingSubmit
+                                        }
+                                        startIcon={
+                                            ratingLoading
+                                                ? (
+                                                    <CircularProgress
+                                                        size={
+                                                            16
+                                                        }
+                                                        sx={{
+                                                            color:
+                                                                "#FFFFFF",
+                                                        }}
+                                                    />
+                                                )
+                                                : (
+                                                    <StarRoundedIcon />
+                                                )
+                                        }
+                                        sx={{
+                                            bgcolor:
+                                                "#FF6B00",
+                                            color:
+                                                "#FFFFFF",
+                                            textTransform:
+                                                "none",
+                                            fontWeight:
+                                                700,
+                                            borderRadius:
+                                                "9px",
+                                            boxShadow:
+                                                "none",
+
+                                            "&:hover": {
+                                                bgcolor:
+                                                    "#E65F00",
+                                                boxShadow:
+                                                    "none",
+                                            },
+
+                                            "&.Mui-disabled": {
+                                                bgcolor:
+                                                    "#FDBA8C",
+                                                color:
+                                                    "#FFFFFF",
+                                            },
+                                        }}
+                                    >
+                                        {ratingLoading
+                                            ? "Enregistrement..."
+                                            : rating
+                                                ? "Enregistrer les modifications"
+                                                : "Envoyer l'évaluation"
+                                        }
+                                    </Button>
+
+                                </Box>
+
+                            </Box>
+
+                        )}
+
+                    </Paper>
+
+                )}
+
         </Box>
     );
 };
 
 
-/* =========================
-   SECTION TITLE
-========================= */
+
 
 const SectionTitle = ({
                           icon,
@@ -598,9 +1212,7 @@ const SectionTitle = ({
 };
 
 
-/* =========================
-   INFO ITEM
-========================= */
+
 
 const InfoItem = ({
                       icon,
@@ -639,7 +1251,8 @@ const InfoItem = ({
                         fontSize: "11px",
                         fontWeight: 700,
                         color: "#94A3B8",
-                        textTransform: "uppercase",
+                        textTransform:
+                            "uppercase",
                         mb: 0.4,
                     }}
                 >
@@ -652,7 +1265,8 @@ const InfoItem = ({
                         fontSize: "14px",
                         fontWeight: 500,
                         color: "#334155",
-                        wordBreak: "break-word",
+                        wordBreak:
+                            "break-word",
                     }}
                 >
                     {value || "-"}
