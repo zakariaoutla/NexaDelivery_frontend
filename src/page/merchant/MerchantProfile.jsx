@@ -110,14 +110,28 @@ const MerchantProfile = () => {
             const response =
                 await updateMyProfile(formData);
 
+
+            const updatedMerchant =
+                response.data.user;
+
+            const newToken =
+                response.data.token;
+
+
             setFormData({
-                name: response.data.name || "",
-                email: response.data.email || "",
+                name: updatedMerchant.name || "",
+                email: updatedMerchant.email || "",
                 telephone:
-                    response.data.telephone || "",
+                    updatedMerchant.telephone || "",
                 businessName:
-                    response.data.businessName || "",
+                    updatedMerchant.businessName || "",
             });
+
+            localStorage.setItem(
+                "token",
+                newToken
+            );
+
 
             toast.success(
                 "Profil mis à jour avec succès."
@@ -139,6 +153,7 @@ const MerchantProfile = () => {
         } finally {
 
             setSaving(false);
+
         }
     };
 

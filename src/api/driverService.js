@@ -27,3 +27,10 @@ export const updateMyDriverStatus = (driverStatus) => {
         }
     );
 };
+
+export const updateMyDriverProfile = (data) => {
+    return axiosInstance.put(
+        "/driver/me",
+        data
+    );
+};
