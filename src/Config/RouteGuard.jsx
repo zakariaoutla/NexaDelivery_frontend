@@ -2,11 +2,32 @@ import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext.jsx";
 
-const RouteGuard = ({ children, allowedRoles }) => {
+
+const dashboardByRole = {
+    ADMIN: "/admin",
+    DRIVER: "/driver",
+    MERCHANT: "/merchant",
+};
+
+const RouteGuard = ({
+                        children,
+                        allowedRoles,
+                        guestOnly = false,
+                        redirectTo = "/dashboard",
+                    }) => {
     const { user, loading } = useContext(AuthContext);
 
     if (loading) {
         return <div>Chargement...</div>;
+    }
+
+    if (guestOnly) {
+        if (user) {
+            const dashboardPath = dashboardByRole[user.role] ?? "/";
+            return <Navigate to={dashboardPath} replace />;
+        }
+
+        return children;
     }
 
     if (!user) {

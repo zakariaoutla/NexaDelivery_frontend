@@ -44,8 +44,19 @@ function App() {
                 <Footer/>
             </>}/>
 
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/register" element={<Register/>}/>
+
+
+            <Route path="/login" element={
+                <RouteGuard guestOnly>
+                    <Login />
+                </RouteGuard>
+            }/>
+
+            <Route path="/register" element={
+                <RouteGuard guestOnly>
+                <Register/>
+                </RouteGuard>
+            }/>
 
 
             <Route path="/admin" element={
