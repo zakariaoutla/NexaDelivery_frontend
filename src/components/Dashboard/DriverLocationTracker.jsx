@@ -4,6 +4,7 @@ const DriverLocationTracker = ({ driverStatus }) => {
 
     const shouldTrack =
         driverStatus === "DISPONIBLE" ||
+        driverStatus === "EN_ATTENTE_ACCEPTATION" ||
         driverStatus === "EN_LIVRAISON";
 
     useDriverLocation(shouldTrack);

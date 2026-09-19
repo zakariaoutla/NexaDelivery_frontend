@@ -25,7 +25,10 @@ import {
 
 import {
     getMyDriverDeliveries,
+    rejectMyDelivery,
 } from "../../api/driverService.js";
+
+import { useOutletContext } from "react-router-dom";
 
 
 export default function DriverDeliveries() {
@@ -44,10 +47,9 @@ export default function DriverDeliveries() {
 
     const [updatingId, setUpdatingId] = useState(null);
 
+    const { setDriverStatus } = useOutletContext();
 
-    /*
-     * FETCH DELIVERIES
-     */
+
 
     const fetchDeliveries = async () => {
 
@@ -85,9 +87,6 @@ export default function DriverDeliveries() {
     }, [page, size, orderBy, order]);
 
 
-    /*
-     * SORT
-     */
 
     const handleSort = (property) => {
 
@@ -105,10 +104,6 @@ export default function DriverDeliveries() {
     };
 
 
-    /*
-     * UPDATE DELIVERY STATUS
-     */
-
     const handleUpdateStatus = async (
         deliveryId,
         newStatus
@@ -123,7 +118,14 @@ export default function DriverDeliveries() {
                 newStatus
             );
 
-            // Refresh table
+            if (newStatus === "ACCEPTEE") {
+                setDriverStatus("EN_LIVRAISON");
+            }
+
+            if (newStatus === "LIVREE") {
+                setDriverStatus("DISPONIBLE");
+            }
+
             await fetchDeliveries();
 
         } catch (err) {
@@ -139,11 +141,35 @@ export default function DriverDeliveries() {
         }
     };
 
+    const handleReject = async (deliveryId) => {
+
+        try {
+
+            setUpdatingId(deliveryId);
+
+            await rejectMyDelivery(deliveryId);
+
+            setDriverStatus("DISPONIBLE");
+
+            await fetchDeliveries();
+
+        } catch (err) {
+
+            console.error(
+                "Erreur refus livraison:",
+                err
+            );
+
+        } finally {
+
+            setUpdatingId(null);
+        }
+    };
+
 
     return (
         <Box>
 
-            {/* PAGE TITLE */}
 
             <Box sx={{ mb: 4 }}>
 
@@ -173,7 +199,6 @@ export default function DriverDeliveries() {
             </Box>
 
 
-            {/* TABLE */}
 
             <Paper
                 elevation={0}
@@ -190,7 +215,6 @@ export default function DriverDeliveries() {
 
                     <Table>
 
-                        {/* TABLE HEADER */}
 
                         <TableHead>
 
@@ -200,7 +224,6 @@ export default function DriverDeliveries() {
                                 }}
                             >
 
-                                {/* TRACKING */}
 
                                 <TableCell sx={headStyle}>
 
@@ -225,7 +248,6 @@ export default function DriverDeliveries() {
                                 </TableCell>
 
 
-                                {/* CLIENT */}
 
                                 <TableCell sx={headStyle}>
 
@@ -250,7 +272,6 @@ export default function DriverDeliveries() {
                                 </TableCell>
 
 
-                                {/* DESTINATION */}
 
                                 <TableCell sx={headStyle}>
 
@@ -275,7 +296,6 @@ export default function DriverDeliveries() {
                                 </TableCell>
 
 
-                                {/* STATUS */}
 
                                 <TableCell sx={headStyle}>
 
@@ -300,7 +320,6 @@ export default function DriverDeliveries() {
                                 </TableCell>
 
 
-                                {/* DATE */}
 
                                 <TableCell sx={headStyle}>
 
@@ -325,7 +344,6 @@ export default function DriverDeliveries() {
                                 </TableCell>
 
 
-                                {/* ACTION */}
 
                                 <TableCell
                                     align="right"
@@ -339,7 +357,6 @@ export default function DriverDeliveries() {
                         </TableHead>
 
 
-                        {/* REUSABLE TABLE BODY */}
 
                         <TableDelivery
                             deliveries={deliveries}
@@ -353,6 +370,9 @@ export default function DriverDeliveries() {
                                     onUpdateStatus={
                                         handleUpdateStatus
                                     }
+                                    onReject={
+                                        handleReject
+                                    }
                                 />
 
                             )}
@@ -363,7 +383,6 @@ export default function DriverDeliveries() {
                 </TableContainer>
 
 
-                {/* PAGINATION */}
 
                 <TablePagination
                     rowsPerPageOptions={[

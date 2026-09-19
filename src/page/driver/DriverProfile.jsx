@@ -365,6 +365,11 @@ export default function DriverProfile() {
             bgcolor: "#F0FDF4",
             color: "#16A34A",
         },
+        EN_ATTENTE_ACCEPTATION: {
+            label: "En attente d'acceptation",
+            bgcolor: "#EFF6FF",
+            color: "#2563EB",
+        },
 
         EN_LIVRAISON: {
             label: "En livraison",
@@ -561,8 +566,10 @@ export default function DriverProfile() {
                         />
 
 
-                        {driver.driverStatus !==
-                            "EN_LIVRAISON" && (
+                        {[
+                            "DISPONIBLE",
+                            "HORS_SERVICE",
+                        ].includes(driver.driverStatus) && (
 
                                 <Button
                                     variant="outlined"

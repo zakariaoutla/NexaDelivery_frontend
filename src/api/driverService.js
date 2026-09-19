@@ -28,6 +28,12 @@ export const updateMyDriverStatus = (driverStatus) => {
     );
 };
 
+export const rejectMyDelivery = (deliveryId) => {
+    return axiosInstance.put(
+        `/delivery/${deliveryId}/reject`
+    );
+};
+
 export const updateMyDriverProfile = (data) => {
     return axiosInstance.put(
         "/driver/me",

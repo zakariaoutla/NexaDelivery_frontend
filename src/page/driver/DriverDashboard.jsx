@@ -11,13 +11,25 @@ import {
     Typography,
 } from "@mui/material";
 
-import { useEffect, useState } from "react";
+import {
+    useEffect,
+    useState
+} from "react";
+
+import {
+    useOutletContext
+} from "react-router-dom";
+
 
 import CardStatistique
     from "../../components/Dashboard/CardStatistique.jsx";
 
 import TableDelivery
     from "../../components/Dashboard/TableDelivery.jsx";
+
+import DriverDeliveryActions
+    from "../../components/Dashboard/DriverDeliveryActions.jsx";
+
 
 import AssignmentOutlinedIcon
     from "@mui/icons-material/AssignmentOutlined";
@@ -28,23 +40,21 @@ import AutorenewRoundedIcon
 import CheckCircleOutlinedIcon
     from "@mui/icons-material/CheckCircleOutlined";
 
+
 import {
     getDriverDashboardStats
 } from "../../api/statisticsService.js";
 
 import {
-    getMyDriverDeliveries
+    getMyDriverDeliveries,
 } from "../../api/driverService.js";
-
-import DriverDeliveryActions
-    from "../../components/Dashboard/DriverDeliveryActions.jsx";
-
-import {
-    updateMyDeliveryStatus
-} from "../../api/deliveryService.js";
 
 
 export default function DriverDashboard() {
+
+
+    const { setDriverStatus } =
+        useOutletContext();
 
 
     const [stats, setStats] = useState({
@@ -54,13 +64,14 @@ export default function DriverDashboard() {
     });
 
 
+    const [deliveries, setDeliveries] =
+        useState([]);
 
+    const [page, setPage] =
+        useState(0);
 
-    const [deliveries, setDeliveries] = useState([]);
-
-    const [page, setPage] = useState(0);
-
-    const [size, setSize] = useState(5);
+    const [size, setSize] =
+        useState(5);
 
     const [orderBy, setOrderBy] =
         useState("id");
@@ -71,90 +82,116 @@ export default function DriverDashboard() {
     const [totalElements, setTotalElements] =
         useState(0);
 
-    const [updatingId, setUpdatingId] = useState(null);
+
+    const fetchStats = async () => {
+
+        try {
+
+            const res =
+                await getDriverDashboardStats();
+
+            setStats(res.data);
+
+        } catch (err) {
+
+            console.error(
+                "Erreur statistiques driver:",
+                err
+            );
+        }
+    };
+
+
+
+    const fetchMyDeliveries = async () => {
+
+        try {
+
+            const res =
+                await getMyDriverDeliveries(
+                    page,
+                    size,
+                    orderBy,
+                    order
+                );
+
+            setDeliveries(
+                res.data.content
+            );
+
+            setTotalElements(
+                res.data.totalElements
+            );
+
+        } catch (err) {
+
+            console.error(
+                "Erreur livraisons driver:",
+                err
+            );
+        }
+    };
+
 
 
 
     useEffect(() => {
 
-        const getStats = async () => {
-
-            try {
-
-                const res =
-                    await getDriverDashboardStats();
-
-                setStats(res.data);
-
-            } catch (err) {
-
-                console.error(
-                    "Erreur statistiques driver:",
-                    err
-                );
-
-            }
-        };
-
-
-        const fetchMyDeliveries = async () => {
-
-            try {
-
-                const res =
-                    await getMyDriverDeliveries(
-                        page,
-                        size,
-                        orderBy,
-                        order
-                    );
-
-                setDeliveries(
-                    res.data.content
-                );
-
-                setTotalElements(
-                    res.data.totalElements
-                );
-
-            } catch (err) {
-
-                console.error(
-                    "Erreur livraisons driver:",
-                    err
-                );
-
-            }
-        };
-
-
-        getStats();
+        fetchStats();
         fetchMyDeliveries();
 
-    }, [page, size, orderBy, order]);
-
+    }, [
+        page,
+        size,
+        orderBy,
+        order
+    ]);
 
 
     const elementCard = [
         {
-            number: stats.assignedDeliveries,
-            text: "Livraisons assignées",
-            desc: "Assignées",
-            icon: <AssignmentOutlinedIcon />,
+            number:
+            stats.assignedDeliveries,
+
+            text:
+                "Livraisons assignées",
+
+            desc:
+                "Assignées",
+
+            icon:
+                <AssignmentOutlinedIcon />,
         },
+
         {
-            number: stats.inProgressDeliveries,
-            text: "Livraisons en cours",
-            desc: "En cours",
-            icon: <AutorenewRoundedIcon />,
+            number:
+            stats.inProgressDeliveries,
+
+            text:
+                "Livraisons en cours",
+
+            desc:
+                "En cours",
+
+            icon:
+                <AutorenewRoundedIcon />,
         },
+
         {
-            number: stats.deliveredDeliveries,
-            text: "Livraisons livrées",
-            desc: "Livrées",
-            icon: <CheckCircleOutlinedIcon />,
+            number:
+            stats.deliveredDeliveries,
+
+            text:
+                "Livraisons livrées",
+
+            desc:
+                "Livrées",
+
+            icon:
+                <CheckCircleOutlinedIcon />,
         },
     ];
+
 
 
 
@@ -165,7 +202,9 @@ export default function DriverDashboard() {
             order === "asc";
 
         setOrder(
-            isAsc ? "desc" : "asc"
+            isAsc
+                ? "desc"
+                : "asc"
         );
 
         setOrderBy(property);
@@ -173,62 +212,8 @@ export default function DriverDashboard() {
         setPage(0);
     };
 
-
-    const handleUpdateStatus = async (
-        deliveryId,
-        newStatus
-    ) => {
-
-        try {
-
-            setUpdatingId(deliveryId);
-
-            await updateMyDeliveryStatus(
-                deliveryId,
-                newStatus
-            );
-
-
-            const deliveryRes =
-                await getMyDriverDeliveries(
-                    page,
-                    size,
-                    orderBy,
-                    order
-                );
-
-            setDeliveries(
-                deliveryRes.data.content
-            );
-
-            setTotalElements(
-                deliveryRes.data.totalElements
-            );
-
-
-            const statsRes =
-                await getDriverDashboardStats();
-
-            setStats(statsRes.data);
-
-        } catch (err) {
-
-            console.error(
-                "Erreur modification statut:",
-                err
-            );
-
-        } finally {
-
-            setUpdatingId(null);
-
-        }
-    };
-
-
     return (
         <>
-
 
             <Typography
                 variant="h5"
@@ -284,11 +269,14 @@ export default function DriverDashboard() {
                     border:
                         "1px solid #E5E7EB",
 
-                    borderRadius: "14px",
+                    borderRadius:
+                        "14px",
 
-                    overflow: "hidden",
+                    overflow:
+                        "hidden",
 
-                    bgcolor: "#FFFFFF",
+                    bgcolor:
+                        "#FFFFFF",
                 }}
             >
 
@@ -296,19 +284,27 @@ export default function DriverDashboard() {
                     sx={{
                         px: 2.5,
                         py: 2,
+
                         borderBottom:
                             "1px solid #E5E7EB",
                     }}
                 >
+
                     <Typography
                         sx={{
-                            fontSize: "16px",
-                            fontWeight: 700,
-                            color: "#0B1F3A",
+                            fontSize:
+                                "16px",
+
+                            fontWeight:
+                                700,
+
+                            color:
+                                "#0B1F3A",
                         }}
                     >
                         Mes livraisons
                     </Typography>
+
                 </Box>
 
 
@@ -329,17 +325,20 @@ export default function DriverDashboard() {
                                 <TableCell
                                     sx={headStyle}
                                 >
+
                                     <TableSortLabel
                                         active={
                                             orderBy ===
                                             "trackingCode"
                                         }
+
                                         direction={
                                             orderBy ===
                                             "trackingCode"
                                                 ? order
                                                 : "asc"
                                         }
+
                                         onClick={() =>
                                             handleSort(
                                                 "trackingCode"
@@ -348,6 +347,7 @@ export default function DriverDashboard() {
                                     >
                                         Tracking
                                     </TableSortLabel>
+
                                 </TableCell>
 
 
@@ -355,17 +355,20 @@ export default function DriverDashboard() {
                                 <TableCell
                                     sx={headStyle}
                                 >
+
                                     <TableSortLabel
                                         active={
                                             orderBy ===
                                             "clientName"
                                         }
+
                                         direction={
                                             orderBy ===
                                             "clientName"
                                                 ? order
                                                 : "asc"
                                         }
+
                                         onClick={() =>
                                             handleSort(
                                                 "clientName"
@@ -374,6 +377,7 @@ export default function DriverDashboard() {
                                     >
                                         Client
                                     </TableSortLabel>
+
                                 </TableCell>
 
 
@@ -381,17 +385,20 @@ export default function DriverDashboard() {
                                 <TableCell
                                     sx={headStyle}
                                 >
+
                                     <TableSortLabel
                                         active={
                                             orderBy ===
                                             "dropAddress"
                                         }
+
                                         direction={
                                             orderBy ===
                                             "dropAddress"
                                                 ? order
                                                 : "asc"
                                         }
+
                                         onClick={() =>
                                             handleSort(
                                                 "dropAddress"
@@ -400,6 +407,7 @@ export default function DriverDashboard() {
                                     >
                                         Destination
                                     </TableSortLabel>
+
                                 </TableCell>
 
 
@@ -407,17 +415,20 @@ export default function DriverDashboard() {
                                 <TableCell
                                     sx={headStyle}
                                 >
+
                                     <TableSortLabel
                                         active={
                                             orderBy ===
                                             "deliveryStatus"
                                         }
+
                                         direction={
                                             orderBy ===
                                             "deliveryStatus"
                                                 ? order
                                                 : "asc"
                                         }
+
                                         onClick={() =>
                                             handleSort(
                                                 "deliveryStatus"
@@ -426,6 +437,7 @@ export default function DriverDashboard() {
                                     >
                                         Statut
                                     </TableSortLabel>
+
                                 </TableCell>
 
 
@@ -433,17 +445,20 @@ export default function DriverDashboard() {
                                 <TableCell
                                     sx={headStyle}
                                 >
+
                                     <TableSortLabel
                                         active={
                                             orderBy ===
                                             "createdAt"
                                         }
+
                                         direction={
                                             orderBy ===
                                             "createdAt"
                                                 ? order
                                                 : "asc"
                                         }
+
                                         onClick={() =>
                                             handleSort(
                                                 "createdAt"
@@ -452,10 +467,7 @@ export default function DriverDashboard() {
                                     >
                                         Date
                                     </TableSortLabel>
-                                </TableCell>
 
-                                <TableCell align="right" sx={headStyle}>
-                                    Action
                                 </TableCell>
 
                             </TableRow>
@@ -465,13 +477,6 @@ export default function DriverDashboard() {
 
                         <TableDelivery
                             deliveries={deliveries}
-                            renderActions={(delivery) => (
-                                <DriverDeliveryActions
-                                    delivery={delivery}
-                                    updating={updatingId === delivery.id}
-                                    onUpdateStatus={handleUpdateStatus}
-                                />
-                            )}
                         />
 
                     </Table>
@@ -486,16 +491,28 @@ export default function DriverDashboard() {
                         10,
                         20,
                     ]}
+
                     component="div"
-                    count={totalElements}
-                    rowsPerPage={size}
-                    page={page}
+
+                    count={
+                        totalElements
+                    }
+
+                    rowsPerPage={
+                        size
+                    }
+
+                    page={
+                        page
+                    }
 
                     onPageChange={(
                         event,
                         newPage
                     ) =>
-                        setPage(newPage)
+                        setPage(
+                            newPage
+                        )
                     }
 
                     onRowsPerPageChange={(
@@ -512,7 +529,8 @@ export default function DriverDashboard() {
                         setPage(0);
                     }}
 
-                    labelRowsPerPage="Rows per page:"
+                    labelRowsPerPage=
+                        "Rows per page:"
                 />
 
             </Paper>
@@ -523,8 +541,16 @@ export default function DriverDashboard() {
 
 
 const headStyle = {
-    fontSize: "11px",
-    fontWeight: 700,
-    color: "#64748B",
-    py: 1.5,
+
+    fontSize:
+        "11px",
+
+    fontWeight:
+        700,
+
+    color:
+        "#64748B",
+
+    py:
+        1.5,
 };

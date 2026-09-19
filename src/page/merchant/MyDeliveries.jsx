@@ -51,6 +51,12 @@ const statusConfig = {
         color: "#2563EB",
     },
 
+    ACCEPTEE: {
+        label: "Acceptée",
+        bgcolor: "#ECFDF5",
+        color: "#059669",
+    },
+
     RECUPEREE: {
         label: "Récupérée",
         bgcolor: "#F5F3FF",
@@ -312,7 +318,7 @@ const MyDeliveries = () => {
     const canTrack = (status) => {
 
         return [
-            "ASSIGNEE",
+            "ACCEPTEE",
             "RECUPEREE",
             "EN_ROUTE",
         ].includes(status);
@@ -321,7 +327,8 @@ const MyDeliveries = () => {
 
     const canCancel = (status) => {
 
-        return status === "EN_ATTENTE";
+        return status === "EN_ATTENTE" ||
+               status === "ASSIGNEE"
     };
 
 

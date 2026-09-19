@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     CircularProgress,
 } from "@mui/material";
@@ -12,15 +13,25 @@ import LocalShippingOutlinedIcon
 import CheckCircleOutlinedIcon
     from "@mui/icons-material/CheckCircleOutlined";
 
+import CloseOutlinedIcon
+    from "@mui/icons-material/CloseOutlined";
+
 
 export default function DriverDeliveryActions({
                                                   delivery,
                                                   updating = false,
                                                   onUpdateStatus,
+                                                  onReject,
                                               }) {
 
     const actionConfig = {
         ASSIGNEE: {
+            label: "Accepter la livraison",
+            nextStatus: "ACCEPTEE",
+            icon: <CheckCircleOutlinedIcon />,
+        },
+
+        ACCEPTEE: {
             label: "Colis récupéré",
             nextStatus: "RECUPEREE",
             icon: <Inventory2OutlinedIcon />,
@@ -40,78 +51,111 @@ export default function DriverDeliveryActions({
     };
 
 
-    const action =
-        actionConfig[delivery.deliveryStatus];
-
+    const action = actionConfig[delivery.deliveryStatus];
 
     if (!action) {
         return null;
     }
 
 
-    const handleClick = () => {
-        onUpdateStatus(
-            delivery.id,
-            action.nextStatus
-        );
-    };
+    const canReject = [
+        "ASSIGNEE",
+        "ACCEPTEE",
+    ].includes(delivery.deliveryStatus);
 
 
     return (
-        <Button
-            variant="contained"
-            size="small"
-
-            onClick={handleClick}
-
-            disabled={updating}
-
-            startIcon={
-                updating
-                    ? (
-                        <CircularProgress
-                            size={14}
-                            sx={{
-                                color: "inherit",
-                            }}
-                        />
-                    )
-                    : action.icon
-            }
-
+        <Box
             sx={{
-                bgcolor: "#FF6B00",
-
-                color: "#FFFFFF",
-
-                boxShadow: "none",
-
-                borderRadius: "8px",
-
-                textTransform: "none",
-
-                fontSize: "11px",
-
-                fontWeight: 700,
-
-                whiteSpace: "nowrap",
-
-                px: 1.5,
-
-                "&:hover": {
-                    bgcolor: "#E85F00",
-                    boxShadow: "none",
-                },
-
-                "&.Mui-disabled": {
-                    bgcolor: "#FED7AA",
-                    color: "#FFFFFF",
-                },
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 1,
             }}
         >
-            {updating
-                ? "Mise à jour..."
-                : action.label}
-        </Button>
+            <Button
+                variant="contained"
+                size="small"
+                disabled={updating}
+
+                onClick={() =>
+                    onUpdateStatus(
+                        delivery.id,
+                        action.nextStatus
+                    )
+                }
+
+                startIcon={
+                    updating
+                        ? (
+                            <CircularProgress
+                                size={14}
+                                sx={{ color: "inherit" }}
+                            />
+                        )
+                        : action.icon
+                }
+
+                sx={{
+                    bgcolor: "#FF6B00",
+                    color: "#FFFFFF",
+                    boxShadow: "none",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                    px: 1.5,
+
+                    "&:hover": {
+                        bgcolor: "#E85F00",
+                        boxShadow: "none",
+                    },
+
+                    "&.Mui-disabled": {
+                        bgcolor: "#FED7AA",
+                        color: "#FFFFFF",
+                    },
+                }}
+            >
+                {updating
+                    ? "Mise à jour..."
+                    : action.label}
+            </Button>
+
+
+            {canReject && (
+                <Button
+                    variant="outlined"
+                    size="small"
+                    disabled={updating}
+
+                    onClick={() =>
+                        onReject(delivery.id)
+                    }
+
+                    startIcon={
+                        <CloseOutlinedIcon />
+                    }
+
+                    sx={{
+                        color: "#DC2626",
+                        borderColor: "#DC2626",
+                        borderRadius: "8px",
+                        textTransform: "none",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        whiteSpace: "nowrap",
+                        px: 1.5,
+
+                        "&:hover": {
+                            borderColor: "#B91C1C",
+                            bgcolor: "#FEF2F2",
+                        },
+                    }}
+                >
+                    Refuser
+                </Button>
+            )}
+        </Box>
     );
 }

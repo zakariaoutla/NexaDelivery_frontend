@@ -116,131 +116,164 @@ const DeliveryTracking = () => {
 
         let mounted = true;
 
-
         const initializeTracking = async () => {
-
 
             try {
 
-                const response =
-                    await getLatestDeliveryLocation(id);
-                console.log(
-                    "LATEST LOCATION RESPONSE:",
-                    response.data
+
+
+                const deliveryResponse =
+                    await getMyDeliveryById(id);
+
+                const delivery =
+                    deliveryResponse.data;
+
+                const trackingAllowed = [
+                    "ACCEPTEE",
+                    "RECUPEREE",
+                    "EN_ROUTE",
+                ].includes(
+                    delivery.deliveryStatus
                 );
 
-                if (mounted) {
 
-                    setLocation(
-                        response.data
+                if (!trackingAllowed) {
+
+                    toast.error(
+                        "Le suivi n'est pas disponible pour cette livraison."
                     );
+
+                    navigate(
+                        `/merchant/deliveries/${id}`,
+                        {
+                            replace: true,
+                        }
+                    );
+
+                    return;
                 }
+
+
+
+
+                try {
+
+                    const response =
+                        await getLatestDeliveryLocation(id);
+
+                    if (mounted) {
+
+                        setLocation(
+                            response.data
+                        );
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Latest location error:",
+                        error
+                    );
+
+                }
+
+
+
+
+                if (!mounted) {
+                    return;
+                }
+
+
+                const client =
+                    connectDeliveryTracking(
+
+                        id,
+
+
+
+                        (newLocation) => {
+
+                            if (!mounted) {
+                                return;
+                            }
+
+                            setLocation(
+                                newLocation
+                            );
+                        },
+
+
+
+                        () => {
+
+                            if (!mounted) {
+                                return;
+                            }
+
+                            setConnected(true);
+
+                            setConnectionError(false);
+                        },
+
+
+                        (error) => {
+
+                            if (!mounted) {
+                                return;
+                            }
+
+                            console.error(
+                                "Tracking WebSocket error:",
+                                error
+                            );
+
+                            setConnected(false);
+
+                            setConnectionError(true);
+                        }
+                    );
+
+
+                stompClientRef.current =
+                    client;
+
 
             } catch (error) {
 
                 console.error(
-                    "Latest location error:",
+                    "Delivery tracking initialization error:",
                     error
                 );
 
-                /*
-                On ne bloque pas le WebSocket.
+                if (!mounted) {
+                    return;
+                }
 
-                Le driver peut envoyer une nouvelle
-                position après l'ouverture de la page.
-                */
+                toast.error(
+                    "Impossible d'accéder au suivi de cette livraison."
+                );
+
+                navigate(
+                    "/merchant/deliveries",
+                    {
+                        replace: true,
+                    }
+                );
 
             } finally {
 
                 if (mounted) {
+
                     setLoading(false);
                 }
             }
-
-
-            /*
-            ====================================
-            2. CONNECT WEBSOCKET
-            ====================================
-            */
-
-            const client =
-                connectDeliveryTracking(
-
-                    id,
-
-                    /*
-                    LOCATION RECEIVED
-                    */
-
-                    (newLocation) => {
-
-                        if (!mounted) {
-                            return;
-                        }
-
-                        console.log(
-                            "Nouvelle position:",
-                            newLocation
-                        );
-
-                        setLocation(
-                            newLocation
-                        );
-                    },
-
-
-                    /*
-                    CONNECTED
-                    */
-
-                    () => {
-
-                        if (!mounted) {
-                            return;
-                        }
-
-                        setConnected(true);
-
-                        setConnectionError(false);
-                    },
-
-
-                    /*
-                    ERROR
-                    */
-
-                    (error) => {
-
-                        if (!mounted) {
-                            return;
-                        }
-
-                        console.error(
-                            "Tracking WebSocket error:",
-                            error
-                        );
-
-                        setConnected(false);
-
-                        setConnectionError(true);
-                    }
-                );
-
-
-            stompClientRef.current =
-                client;
         };
 
 
         initializeTracking();
 
 
-        /*
-        ====================================
-        CLEANUP
-        ====================================
-        */
 
         return () => {
 
@@ -253,15 +286,18 @@ const DeliveryTracking = () => {
                 disconnectDeliveryTracking(
                     stompClientRef.current
                 );
+
+                stompClientRef.current = null;
             }
         };
 
-    }, [id]);
+    }, [
+        id,
+        navigate,
+    ]);
 
 
-    /* ========================================
-       FORMAT DATE
-    ======================================== */
+
 
     const formatDate = (date) => {
 
@@ -285,9 +321,7 @@ const DeliveryTracking = () => {
     };
 
 
-    /* ========================================
-       LOADING
-    ======================================== */
+
 
     if (loading) {
 
@@ -317,9 +351,7 @@ const DeliveryTracking = () => {
 
         <Box>
 
-            {/* ========================================
-                BACK
-            ======================================== */}
+
 
             <Button
                 startIcon={
@@ -344,10 +376,6 @@ const DeliveryTracking = () => {
                 Retour aux détails
             </Button>
 
-
-            {/* ========================================
-                HEADER
-            ======================================== */}
 
             <Box
                 sx={{
@@ -393,8 +421,6 @@ const DeliveryTracking = () => {
 
                 </Box>
 
-
-                {/* CONNECTION STATUS */}
 
                 {connected ? (
 
@@ -447,9 +473,6 @@ const DeliveryTracking = () => {
             </Box>
 
 
-            {/* ========================================
-                GRID
-            ======================================== */}
 
             <Box
                 sx={{
@@ -461,10 +484,6 @@ const DeliveryTracking = () => {
                     gap: 3,
                 }}
             >
-
-                {/* ========================================
-                    MAP
-                ======================================== */}
 
                 <Paper
                     elevation={0}
@@ -565,9 +584,6 @@ const DeliveryTracking = () => {
 
                     ) : (
 
-                        /* ========================================
-                           NO LOCATION
-                        ======================================== */
 
                         <Box
                             sx={{
@@ -638,9 +654,7 @@ const DeliveryTracking = () => {
                 </Paper>
 
 
-                {/* ========================================
-                    LOCATION INFO
-                ======================================== */}
+
 
                 <Box
                     sx={{
@@ -650,7 +664,7 @@ const DeliveryTracking = () => {
                     }}
                 >
 
-                    {/* LIVE CARD */}
+
 
                     <Paper
                         elevation={0}
@@ -732,7 +746,7 @@ const DeliveryTracking = () => {
                     </Paper>
 
 
-                    {/* LIVE INFORMATION */}
+
 
                     <Paper
                         elevation={0}
@@ -808,9 +822,6 @@ const DeliveryTracking = () => {
 };
 
 
-/* ========================================
-   INFO ITEM
-======================================== */
 
 const InfoItem = ({
                       icon,

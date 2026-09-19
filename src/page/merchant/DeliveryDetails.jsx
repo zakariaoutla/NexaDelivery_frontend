@@ -51,6 +51,12 @@ const statusConfig = {
         color: "#2563EB",
     },
 
+    ACCEPTEE: {
+        label: "Acceptée",
+        bgcolor: "#ECFDF5",
+        color: "#059669",
+    },
+
     RECUPEREE: {
         label: "Récupérée",
         bgcolor: "#F5F3FF",
@@ -207,9 +213,6 @@ const DeliveryDetails = () => {
     };
 
 
-    // =========================
-    // CREATE / UPDATE RATING
-    // =========================
 
     const handleRatingSubmit = async () => {
 
@@ -309,9 +312,6 @@ const DeliveryDetails = () => {
     };
 
 
-    // =========================
-    // CANCEL EDIT
-    // =========================
 
     const handleCancelRatingEdit = () => {
 
@@ -330,10 +330,6 @@ const DeliveryDetails = () => {
         setEditingRating(false);
     };
 
-
-    // =========================
-    // FORMAT DATE
-    // =========================
 
     const formatDate = (date) => {
 
@@ -356,23 +352,17 @@ const DeliveryDetails = () => {
     };
 
 
-    // =========================
-    // TRACKING
-    // =========================
-
     const canTrack = (status) => {
 
         return [
-            "ASSIGNEE",
+            "ACCEPTEE",
             "RECUPEREE",
             "EN_ROUTE",
         ].includes(status);
     };
 
 
-    // =========================
-    // LOADING
-    // =========================
+    
 
     if (loading) {
 
