@@ -42,6 +42,7 @@ import {
 } from "../../api/driverService.js";
 
 import { toast } from "react-toastify";
+import { useOutletContext } from "react-router-dom";
 
 
 export default function DriverProfile() {
@@ -56,6 +57,8 @@ export default function DriverProfile() {
 
     const [updatingStatus, setUpdatingStatus] =
         useState(false);
+
+    const { setDriverStatus } = useOutletContext();
 
 
 
@@ -121,22 +124,83 @@ export default function DriverProfile() {
                 ? "HORS_SERVICE"
                 : "DISPONIBLE";
 
-
         try {
 
             setUpdatingStatus(true);
+
+            if (newStatus === "DISPONIBLE") {
+
+                if (!navigator.geolocation) {
+                    toast.error(
+                        "La géolocalisation n'est pas supportée par votre navigateur."
+                    );
+                    return;
+                }
+
+                try {
+
+                    await new Promise((resolve, reject) => {
+
+                        navigator.geolocation.getCurrentPosition(
+                            resolve,
+                            reject,
+                            {
+                                enableHighAccuracy: true,
+                                timeout: 10000,
+                                maximumAge: 0,
+                            }
+                        );
+
+                    });
+
+                } catch (locationError) {
+
+                    console.error(
+                        "Erreur géolocalisation:",
+                        locationError
+                    );
+
+                    if (
+                        locationError.code ===
+                        locationError.PERMISSION_DENIED
+                    ) {
+                        toast.error(
+                            "Vous devez autoriser votre localisation pour devenir disponible."
+                        );
+                    } else if (
+                        locationError.code ===
+                        locationError.POSITION_UNAVAILABLE
+                    ) {
+                        toast.error(
+                            "Votre position est actuellement indisponible."
+                        );
+                    } else {
+                        toast.error(
+                            "Impossible de récupérer votre localisation."
+                        );
+                    }
+
+                    return;
+                }
+            }
+
 
             const res =
                 await updateMyDriverStatus(
                     newStatus
                 );
 
+
             setDriver(res.data);
+            setDriverStatus(res.data.driverStatus);
+
+
             toast.success(
                 newStatus === "DISPONIBLE"
                     ? "Vous êtes maintenant disponible."
                     : "Vous êtes maintenant hors service."
             );
+
 
         } catch (err) {
 
@@ -144,6 +208,7 @@ export default function DriverProfile() {
                 "Erreur modification statut:",
                 err
             );
+
             toast.error(
                 err.response?.data?.message ||
                 "Impossible de modifier votre statut."

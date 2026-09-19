@@ -1,20 +1,75 @@
+import { useContext, useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
 import Sidebar from "../components/Dashboard/Sidebar.jsx";
 import Topbar from "../components/Dashboard/Topbar.jsx";
+import DriverLocationTracker from "../components/Dashboard/DriverLocationTracker.jsx";
+
+import { AuthContext } from "../Config/AuthContext.jsx";
+import { getMyDriverProfile } from "../api/driverService.js";
 
 const DashboardLayout = () => {
+
+    const { user } = useContext(AuthContext);
+
+    const [driverStatus, setDriverStatus] =
+        useState(null);
+
+
+    useEffect(() => {
+
+        if (user?.role !== "DRIVER") {
+            setDriverStatus(null);
+            return;
+        }
+
+        const fetchDriverStatus = async () => {
+
+            try {
+
+                const response =
+                    await getMyDriverProfile();
+
+                setDriverStatus(
+                    response.data.driverStatus
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur récupération statut driver:",
+                    error
+                );
+            }
+        };
+
+        fetchDriverStatus();
+
+    }, [user?.role]);
+
+
     return (
+
         <Box
             sx={{
                 minHeight: "100vh",
                 bgcolor: "#F7F9FB",
             }}
         >
+
+            {user?.role === "DRIVER" && (
+
+                <DriverLocationTracker
+                    driverStatus={driverStatus}
+                />
+
+            )}
+
             <Sidebar />
 
             <Topbar />
+
             <Box
                 component="main"
                 sx={{
@@ -43,8 +98,16 @@ const DashboardLayout = () => {
                     boxSizing: "border-box",
                 }}
             >
-                <Outlet />
+
+                <Outlet
+                    context={{
+                        driverStatus,
+                        setDriverStatus,
+                    }}
+                />
+
             </Box>
+
         </Box>
     );
 };
