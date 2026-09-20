@@ -1,5 +1,6 @@
 import {
     useContext,
+    useEffect,
     useState,
 } from "react";
 
@@ -40,6 +41,17 @@ import KeyboardArrowDownRoundedIcon
 import { AuthContext }
     from "../../Config/AuthContext.jsx";
 
+import {
+    getMyNotifications,
+    getMyUnreadCount,
+    markNotificationAsRead,
+} from "../../api/notificationService.js";
+
+import {
+    connectWebSocket,
+    disconnectWebSocket,
+} from "../../api/webSocketService.js";
+
 
 const Topbar = () => {
 
@@ -73,7 +85,9 @@ const Topbar = () => {
         Boolean(notificationAnchor);
 
 
-   const notificationCount = 3;
+    const [notifications, setNotifications] = useState([]);
+    const [notificationCount, setNotificationCount] = useState(0);
+    const [loadingNotifications, setLoadingNotifications] = useState(true);
 
     const roleConfig = {
 
@@ -187,6 +201,164 @@ const Topbar = () => {
             ?.charAt(0)
             ?.toUpperCase() ||
         currentRole.avatarFallback;
+
+
+
+    useEffect(() => {
+
+        if (!user) {
+            return;
+        }
+
+        const fetchNotifications = async () => {
+
+            try {
+
+                setLoadingNotifications(true);
+
+                const [
+                    notificationsResponse,
+                    countResponse,
+                ] = await Promise.all([
+                    getMyNotifications(
+                        0,
+                        100,
+                        "createdAt,desc"
+                    ),
+                    getMyUnreadCount(),
+                ]);
+
+                setNotifications(
+                    notificationsResponse.data.content || []
+                );
+
+                setNotificationCount(
+                    countResponse.data || 0
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur chargement notifications:",
+                    error
+                );
+
+            } finally {
+
+                setLoadingNotifications(false);
+            }
+        };
+
+        fetchNotifications();
+
+    }, [user]);
+
+    useEffect(() => {
+
+        const token =
+            localStorage.getItem("token");
+
+        if (!token || !user) {
+            return;
+        }
+
+        connectWebSocket({
+            token,
+
+            onNotification: (notification) => {
+
+                console.log(
+                    "Nouvelle notification:",
+                    notification
+                );
+
+                setNotifications((previous) => {
+
+                    const alreadyExists =
+                        previous.some(
+                            (item) =>
+                                item.id ===
+                                notification.id
+                        );
+
+                    if (alreadyExists) {
+                        return previous;
+                    }
+
+                    return [
+                        notification,
+                        ...previous,
+                    ].slice(0, 10);
+                });
+
+                if (!notification.read) {
+                    setNotificationCount(
+                        (previous) =>
+                            previous + 1
+                    );
+                }
+            },
+
+            onConnected: () => {
+                console.log(
+                    "Notifications temps réel connectées"
+                );
+            },
+
+            onError: (error) => {
+                console.error(
+                    "Erreur notifications temps réel:",
+                    error
+                );
+            },
+        });
+
+        return () => {
+            disconnectWebSocket();
+        };
+
+    }, [user]);
+
+
+    const handleNotificationClick = async (
+        notification
+    ) => {
+
+        try {
+
+            if (!notification.read) {
+
+                await markNotificationAsRead(
+                    notification.id
+                );
+
+                setNotifications((previous) =>
+                    previous.map((item) =>
+                        item.id === notification.id
+                            ? {
+                                ...item,
+                                read: true,
+                            }
+                            : item
+                    )
+                );
+
+                setNotificationCount(
+                    (previous) =>
+                        Math.max(0, previous - 1)
+                );
+            }
+
+            handleCloseNotifications();
+
+        } catch (error) {
+
+            console.error(
+                "Erreur lecture notification:",
+                error
+            );
+        }
+    };
 
 
     return (
@@ -732,18 +904,147 @@ const Topbar = () => {
                             }}
                         />
 
-                        <Typography
-                            sx={{
-                                fontSize:
-                                    "12px",
+                        {loadingNotifications ? (
 
-                                color:
-                                    "#94A3B8",
-                            }}
-                        >
-                            Les notifications
-                            apparaîtront ici
-                        </Typography>
+                            <Box
+                                sx={{
+                                    px: 2,
+                                    py: 3,
+                                    textAlign: "center",
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        fontSize: "12px",
+                                        color: "#94A3B8",
+                                    }}
+                                >
+                                    Chargement...
+                                </Typography>
+                            </Box>
+
+                        ) : notifications.length === 0 ? (
+
+                            <Box
+                                sx={{
+                                    px: 2,
+                                    py: 3,
+                                    textAlign: "center",
+                                }}
+                            >
+                                <NotificationsNoneRoundedIcon
+                                    sx={{
+                                        fontSize: "32px",
+                                        color: "#CBD5E1",
+                                        mb: 1,
+                                    }}
+                                />
+
+                                <Typography
+                                    sx={{
+                                        fontSize: "12px",
+                                        color: "#94A3B8",
+                                    }}
+                                >
+                                    Aucune notification
+                                </Typography>
+                            </Box>
+
+                        ) : (
+
+                            <Box
+                                sx={{
+                                    maxHeight: "360px",
+                                    overflowY: "auto",
+                                }}
+                            >
+                                {notifications.map((notification) => (
+
+                                    <MenuItem
+                                        key={notification.id}
+                                        onClick={() =>
+                                            handleNotificationClick(
+                                                notification
+                                            )
+                                        }
+                                        sx={{
+                                            whiteSpace: "normal",
+                                            alignItems: "flex-start",
+                                            px: 2,
+                                            py: 1.5,
+
+                                            bgcolor:
+                                                notification.read
+                                                    ? "#FFFFFF"
+                                                    : "#FFF8F3",
+
+                                            borderBottom:
+                                                "1px solid #F1F5F9",
+
+                                            "&:hover": {
+                                                bgcolor: "#FFF4EC",
+                                            },
+                                        }}
+                                    >
+                                        <Box sx={{ width: "100%" }}>
+
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    gap: 1,
+                                                    alignItems: "flex-start",
+                                                }}
+                                            >
+
+                                                {!notification.read && (
+                                                    <Box
+                                                        sx={{
+                                                            width: 7,
+                                                            height: 7,
+                                                            borderRadius: "50%",
+                                                            bgcolor: "#FF6B00",
+                                                            mt: 0.7,
+                                                            flexShrink: 0,
+                                                        }}
+                                                    />
+                                                )}
+
+                                                <Typography
+                                                    sx={{
+                                                        fontSize: "12px",
+                                                        lineHeight: 1.5,
+                                                        color: "#334155",
+                                                        fontWeight:
+                                                            notification.read
+                                                                ? 400
+                                                                : 600,
+                                                    }}
+                                                >
+                                                    {notification.message}
+                                                </Typography>
+
+                                            </Box>
+
+                                            <Typography
+                                                sx={{
+                                                    mt: 0.6,
+                                                    fontSize: "10px",
+                                                    color: "#94A3B8",
+                                                }}
+                                            >
+                                                {notification.createdAt
+                                                    ? new Date(
+                                                        notification.createdAt
+                                                    ).toLocaleString("fr-FR")
+                                                    : ""}
+                                            </Typography>
+
+                                        </Box>
+                                    </MenuItem>
+
+                                ))}
+                            </Box>
+                        )}
 
                     </Box>
 
