@@ -14,6 +14,8 @@ import {
     BottomNavigationAction,
 } from "@mui/material";
 
+
+
 import DashboardOutlinedIcon
     from "@mui/icons-material/DashboardOutlined";
 
@@ -25,6 +27,8 @@ import LocalShippingOutlinedIcon
 
 import { AuthContext }
     from "../../Config/AuthContext.jsx";
+
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 
 
 const merchantMenu = [
@@ -46,6 +50,11 @@ const merchantMenu = [
         mobileLabel: "Livraisons",
         path: "/merchant/deliveries",
         icon: <LocalShippingOutlinedIcon />,
+    },
+    {
+        label: "Points de collecte",
+        icon: <LocationOnOutlinedIcon />,
+        path: "/merchant/collection-points",
     },
 ];
 

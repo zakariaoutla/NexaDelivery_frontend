@@ -973,19 +973,7 @@ export default function DriverProfile() {
                                 }
                             />
 
-
-                            <InfoItem
-                                icon={
-                                    <LocationOnOutlinedIcon />
-                                }
-
-                                label="Zone"
-
-                                value={
-                                    driver.zoneName ||
-                                    "Non assignée"
-                                }
-                            />
+                            
 
                         </Box>
 

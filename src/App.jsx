@@ -24,6 +24,7 @@ import DeliveryTracking from "./page/merchant/DeliveryTracking.jsx";
 import DriverDashboard from "./page/driver/DriverDashboard.jsx";
 import DriverDeliveries from "./page/driver/DriverDeliveries.jsx";
 import DriverProfile from "./page/driver/DriverProfile.jsx";
+import CollectionPoints from "./page/merchant/CollectionPoints.jsx";
 
 function App() {
 
@@ -81,6 +82,10 @@ function App() {
                     element={<DeliveryTracking />}
                 />
                 <Route path="profile" element={<MerchantProfile/>}/>
+                <Route
+                    path="collection-points"
+                    element={<CollectionPoints />}
+                />
 
             </Route>
 

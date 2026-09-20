@@ -16,9 +16,6 @@ import {
     useState
 } from "react";
 
-import {
-    useOutletContext
-} from "react-router-dom";
 
 
 import CardStatistique
@@ -27,8 +24,6 @@ import CardStatistique
 import TableDelivery
     from "../../components/Dashboard/TableDelivery.jsx";
 
-import DriverDeliveryActions
-    from "../../components/Dashboard/DriverDeliveryActions.jsx";
 
 
 import AssignmentOutlinedIcon
@@ -53,8 +48,6 @@ import {
 export default function DriverDashboard() {
 
 
-    const { setDriverStatus } =
-        useOutletContext();
 
 
     const [stats, setStats] = useState({
