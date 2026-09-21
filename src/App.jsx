@@ -31,6 +31,7 @@ import AdminDrivers from "./page/admin/AdminDrivers.jsx";
 import AdminDriverDetails from "./page/admin/AdminDriverDetails.jsx";
 import AdminVehicles from "./page/admin/AdminVehicles.jsx";
 import AdminMerchants from "./page/admin/AdminMerchants.jsx";
+import AdminMerchantDetails from "./page/admin/AdminMerchantDetails.jsx";
 
 function App() {
 
@@ -97,6 +98,11 @@ function App() {
                 <Route
                     path="merchants"
                     element={<AdminMerchants />}
+                />
+
+                <Route
+                    path="merchants/:id"
+                    element={<AdminMerchantDetails />}
                 />
 
             </Route>
