@@ -78,18 +78,6 @@ export const deleteDriver = (id) => {
     );
 };
 
-export const updateDriverStatus = (
-    id,
-    driverStatus
-) => {
-    return axiosInstance.put(
-        `/driver/${id}/status`,
-        {
-            driverStatus,
-        }
-    );
-};
-
 export const assignVehicleToDriver = (
     driverId,
     vehicleId

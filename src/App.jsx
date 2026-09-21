@@ -28,6 +28,8 @@ import CollectionPoints from "./page/merchant/CollectionPoints.jsx";
 import AdminDeliveries from "./page/admin/AdminDeliveries.jsx";
 import AdminDeliveryDetails from "./page/admin/AdminDeliveryDetails.jsx";
 import AdminDrivers from "./page/admin/AdminDrivers.jsx";
+import AdminDriverDetails from "./page/admin/AdminDriverDetails.jsx";
+import AdminVehicles from "./page/admin/AdminVehicles.jsx";
 
 function App() {
 
@@ -81,6 +83,14 @@ function App() {
                 <Route
                     path="drivers"
                     element={<AdminDrivers />}
+                />
+                <Route
+                    path="drivers/:id"
+                    element={<AdminDriverDetails />}
+                />
+                <Route
+                    path="vehicles"
+                    element={<AdminVehicles />}
                 />
 
             </Route>
