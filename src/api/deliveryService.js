@@ -27,18 +27,20 @@ export const updateMyDeliveryStatus = (deliveryId, deliveryStatus) => {
 
 export const getAllDeliveries = (
     page = 0,
-    size = 5,
+    size = 10,
     orderBy = "createdAt",
-    order = "desc"
+    order = "desc",
+    search = "",
+    status = ""
 ) => {
-    return axiosInstance.get(
-        "/delivery",
-        {
-            params: {
-                page,
-                size,
-                sort: `${orderBy},${order}`,
-            },
-        }
-    );
+
+    return axiosInstance.get("/delivery", {
+        params: {
+            page,
+            size,
+            sort: `${orderBy},${order}`,
+            ...(search.trim() && { search: search.trim() }),
+            ...(status && status !== "ALL" && { status }),
+        },
+    });
 };

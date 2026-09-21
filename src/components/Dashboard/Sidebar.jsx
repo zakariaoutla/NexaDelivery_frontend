@@ -30,6 +30,50 @@ import { AuthContext }
 
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 
+import PeopleAltOutlinedIcon
+    from "@mui/icons-material/PeopleAltOutlined";
+
+import StorefrontOutlinedIcon
+    from "@mui/icons-material/StorefrontOutlined";
+
+import DirectionsCarOutlinedIcon
+    from "@mui/icons-material/DirectionsCarOutlined";
+
+
+const adminMenu = [
+    {
+        label: "Tableau de bord",
+        mobileLabel: "Accueil",
+        path: "/admin",
+        icon: <DashboardOutlinedIcon />,
+        end: true,
+    },
+    {
+        label: "Livraisons",
+        mobileLabel: "Livraisons",
+        path: "/admin/deliveries",
+        icon: <LocalShippingOutlinedIcon />,
+    },
+    {
+        label: "Chauffeurs",
+        mobileLabel: "Chauffeurs",
+        path: "/admin/drivers",
+        icon: <PeopleAltOutlinedIcon />,
+    },
+    {
+        label: "Commerçants",
+        mobileLabel: "Commerçants",
+        path: "/admin/merchants",
+        icon: <StorefrontOutlinedIcon />,
+    },
+    {
+        label: "Véhicules",
+        mobileLabel: "Véhicules",
+        path: "/admin/vehicles",
+        icon: <DirectionsCarOutlinedIcon />,
+    },
+];
+
 
 const merchantMenu = [
     {
@@ -87,6 +131,9 @@ const Sidebar = () => {
     const getMenuItems = () => {
 
         switch (user?.role) {
+
+            case "ADMIN":
+                return adminMenu;
 
             case "MERCHANT":
                 return merchantMenu;
