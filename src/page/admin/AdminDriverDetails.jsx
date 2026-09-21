@@ -4,6 +4,10 @@ import {
     Button,
     Chip,
     CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     Divider,
     FormControl,
     MenuItem,
@@ -41,9 +45,13 @@ import StarRoundedIcon
 import DirectionsCarOutlinedIcon
     from "@mui/icons-material/DirectionsCarOutlined";
 
+import DeleteOutlineRoundedIcon
+    from "@mui/icons-material/DeleteOutlineRounded";
+
 import {
     assignVehicleToDriver,
     getDriverById,
+    removeVehicleFromDriver,
 } from "../../api/driverService.js";
 
 import {
@@ -93,6 +101,12 @@ const AdminDriverDetails = () => {
         useState("");
 
     const [vehicleLoading, setVehicleLoading] =
+        useState(false);
+
+    const [removeDialogOpen, setRemoveDialogOpen] =
+        useState(false);
+
+    const [removeLoading, setRemoveLoading] =
         useState(false);
 
     const [snackbar, setSnackbar] =
@@ -240,6 +254,45 @@ const AdminDriverDetails = () => {
     };
 
 
+    const handleRemoveVehicle = async () => {
+
+        try {
+
+            setRemoveLoading(true);
+
+            const response =
+                await removeVehicleFromDriver(id);
+
+            setDriver(response.data);
+
+            setVehicleId("");
+
+            setRemoveDialogOpen(false);
+
+            showMessage(
+                "Véhicule retiré avec succès."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erreur retrait véhicule:",
+                error
+            );
+
+            showMessage(
+                error.response?.data?.message ||
+                "Impossible de retirer le véhicule.",
+                "error"
+            );
+
+        } finally {
+
+            setRemoveLoading(false);
+        }
+    };
+
+
     if (loading) {
 
         return (
@@ -303,8 +356,7 @@ const AdminDriverDetails = () => {
         statusConfig[
             driver.driverStatus
             ] ?? {
-            label:
-            driver.driverStatus,
+            label: driver.driverStatus,
             bgcolor: "#F1F5F9",
             color: "#64748B",
         };
@@ -616,95 +668,143 @@ const AdminDriverDetails = () => {
                                 display: "flex",
                                 alignItems:
                                     "center",
-                                gap: 1.5,
+                                justifyContent:
+                                    "space-between",
+                                gap: 2,
                                 mb: 3,
                                 p: 2,
                                 bgcolor:
                                     "#F8FAFC",
                                 borderRadius:
                                     "10px",
+                                flexDirection: {
+                                    xs: "column",
+                                    sm: "row",
+                                },
                             }}
                         >
 
                             <Box
                                 sx={{
-                                    width: 42,
-                                    height: 42,
-                                    borderRadius:
-                                        "10px",
-                                    bgcolor:
-                                        "#FFF7ED",
-                                    display:
-                                        "flex",
+                                    display: "flex",
                                     alignItems:
                                         "center",
-                                    justifyContent:
-                                        "center",
-                                    flexShrink: 0,
+                                    gap: 1.5,
+                                    width: "100%",
                                 }}
                             >
 
-                                <DirectionsCarOutlinedIcon
+                                <Box
                                     sx={{
-                                        color:
-                                            "#FF6B00",
-                                    }}
-                                />
-
-                            </Box>
-
-
-                            <Box>
-
-                                <Typography
-                                    sx={{
-                                        fontSize:
-                                            "11px",
-                                        color:
-                                            "#94A3B8",
-                                        fontWeight:
-                                            600,
-                                        textTransform:
-                                            "uppercase",
+                                        width: 42,
+                                        height: 42,
+                                        borderRadius:
+                                            "10px",
+                                        bgcolor:
+                                            "#FFF7ED",
+                                        display:
+                                            "flex",
+                                        alignItems:
+                                            "center",
+                                        justifyContent:
+                                            "center",
+                                        flexShrink: 0,
                                     }}
                                 >
-                                    Véhicule actuel
-                                </Typography>
 
-                                <Typography
-                                    sx={{
-                                        mt: 0.3,
-                                        fontSize:
-                                            "14px",
-                                        fontWeight:
-                                            700,
-                                        color:
-                                            "#0B1F3A",
-                                    }}
-                                >
-                                    {currentVehicle
-                                        ? `${currentVehicle.type} — ${currentVehicle.capacityKg} kg`
-                                        : driver.vehicleType ||
-                                        "Non assigné"}
-                                </Typography>
+                                    <DirectionsCarOutlinedIcon
+                                        sx={{
+                                            color:
+                                                "#FF6B00",
+                                        }}
+                                    />
 
-                                {driver.vehicleId && (
+                                </Box>
+
+
+                                <Box>
+
+                                    <Typography
+                                        sx={{
+                                            fontSize:
+                                                "11px",
+                                            color:
+                                                "#94A3B8",
+                                            fontWeight:
+                                                600,
+                                            textTransform:
+                                                "uppercase",
+                                        }}
+                                    >
+                                        Véhicule actuel
+                                    </Typography>
 
                                     <Typography
                                         sx={{
                                             mt: 0.3,
                                             fontSize:
-                                                "11px",
+                                                "14px",
+                                            fontWeight:
+                                                700,
                                             color:
-                                                "#94A3B8",
+                                                "#0B1F3A",
                                         }}
                                     >
-                                        ID véhicule : #{driver.vehicleId}
+                                        {currentVehicle
+                                            ? `${currentVehicle.type} — ${currentVehicle.capacityKg} kg`
+                                            : driver.vehicleType ||
+                                            "Non assigné"}
                                     </Typography>
 
-                                )}
+                                    {driver.vehicleId && (
+
+                                        <Typography
+                                            sx={{
+                                                mt: 0.3,
+                                                fontSize:
+                                                    "11px",
+                                                color:
+                                                    "#94A3B8",
+                                            }}
+                                        >
+                                            ID véhicule : #{driver.vehicleId}
+                                        </Typography>
+
+                                    )}
+
+                                </Box>
 
                             </Box>
+
+
+                            {driver.vehicleId && (
+
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    startIcon={
+                                        <DeleteOutlineRoundedIcon />
+                                    }
+                                    onClick={() =>
+                                        setRemoveDialogOpen(
+                                            true
+                                        )
+                                    }
+                                    sx={{
+                                        minWidth:
+                                            "110px",
+                                        flexShrink: 0,
+                                        textTransform:
+                                            "none",
+                                        borderRadius:
+                                            "9px",
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    Retirer
+                                </Button>
+
+                            )}
 
                         </Box>
 
@@ -719,7 +819,9 @@ const AdminDriverDetails = () => {
                                 fontWeight: 600,
                             }}
                         >
-                            Affecter un véhicule
+                            {driver.vehicleId
+                                ? "Changer le véhicule"
+                                : "Affecter un véhicule"}
                         </Typography>
 
 
@@ -835,6 +937,10 @@ const AdminDriverDetails = () => {
                                         }}
                                     />
 
+                                ) : driver.vehicleId ? (
+
+                                    "Changer"
+
                                 ) : (
 
                                     "Affecter"
@@ -850,6 +956,143 @@ const AdminDriverDetails = () => {
                 </Paper>
 
             </Box>
+
+
+            <Dialog
+                open={removeDialogOpen}
+                onClose={() => {
+                    if (!removeLoading) {
+                        setRemoveDialogOpen(
+                            false
+                        );
+                    }
+                }}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{
+                    sx: {
+                        borderRadius:
+                            "14px",
+                    },
+                }}
+            >
+
+                <DialogTitle
+                    sx={{
+                        fontWeight: 700,
+                        color: "#0B1F3A",
+                    }}
+                >
+                    Retirer le véhicule
+                </DialogTitle>
+
+
+                <DialogContent>
+
+                    <Typography
+                        sx={{
+                            color: "#64748B",
+                            fontSize: "14px",
+                            lineHeight: 1.7,
+                        }}
+                    >
+                        Voulez-vous vraiment retirer ce véhicule du chauffeur
+                        {" "}
+                        <strong>
+                            {driver.name}
+                        </strong>
+                        {" "}
+                        ?
+                    </Typography>
+
+                    <Typography
+                        sx={{
+                            mt: 1.5,
+                            color: "#94A3B8",
+                            fontSize: "12px",
+                        }}
+                    >
+                        Le véhicule ne sera pas supprimé. Il pourra être affecté à un autre chauffeur.
+                    </Typography>
+
+                </DialogContent>
+
+
+                <DialogActions
+                    sx={{
+                        px: 3,
+                        pb: 2.5,
+                    }}
+                >
+
+                    <Button
+                        onClick={() =>
+                            setRemoveDialogOpen(
+                                false
+                            )
+                        }
+                        disabled={
+                            removeLoading
+                        }
+                        sx={{
+                            color: "#64748B",
+                            textTransform:
+                                "none",
+                        }}
+                    >
+                        Annuler
+                    </Button>
+
+
+                    <Button
+                        variant="contained"
+                        onClick={
+                            handleRemoveVehicle
+                        }
+                        disabled={
+                            removeLoading
+                        }
+                        sx={{
+                            minWidth:
+                                "100px",
+                            bgcolor:
+                                "#DC2626",
+                            textTransform:
+                                "none",
+                            borderRadius:
+                                "9px",
+                            boxShadow:
+                                "none",
+                            "&:hover": {
+                                bgcolor:
+                                    "#B91C1C",
+                                boxShadow:
+                                    "none",
+                            },
+                        }}
+                    >
+
+                        {removeLoading ? (
+
+                            <CircularProgress
+                                size={20}
+                                sx={{
+                                    color:
+                                        "#FFFFFF",
+                                }}
+                            />
+
+                        ) : (
+
+                            "Retirer"
+
+                        )}
+
+                    </Button>
+
+                </DialogActions>
+
+            </Dialog>
 
 
             <Snackbar

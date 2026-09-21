@@ -92,3 +92,10 @@ export const getDriverById = (id) => {
         `/driver/${id}`
     );
 };
+
+
+export const removeVehicleFromDriver = (driverId) => {
+    return axiosInstance.delete(
+        `/driver/${driverId}/vehicle`
+    );
+};
