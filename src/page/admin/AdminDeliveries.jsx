@@ -15,6 +15,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    TableSortLabel,
     TextField,
     Tooltip,
     Typography,
@@ -44,7 +45,6 @@ import {
 
 
 const statusConfig = {
-
     EN_ATTENTE: {
         label: "En attente",
         bgcolor: "#FFF7ED",
@@ -111,42 +111,88 @@ const AdminDeliveries = () => {
     const [statusFilter, setStatusFilter] =
         useState("ALL");
 
+    const [orderBy, setOrderBy] =
+        useState("createdAt");
+
+    const [order, setOrder] =
+        useState("desc");
+
     const pageSize = 10;
 
+
     const fetchDeliveries = async () => {
+
         try {
+
             setLoading(true);
 
-            const response = await getAllDeliveries(
-                page,
-                pageSize,
-                "createdAt",
-                "desc",
-                search,
-                statusFilter
+            const response =
+                await getAllDeliveries(
+                    page,
+                    pageSize,
+                    orderBy,
+                    order,
+                    search,
+                    statusFilter
+                );
+
+            setDeliveries(
+                response.data.content ?? []
             );
 
-            setDeliveries(response.data.content ?? []);
-            setTotalPages(response.data.totalPages ?? 0);
+            setTotalPages(
+                response.data.totalPages ?? 0
+            );
 
         } catch (error) {
+
             console.error(
                 "Erreur chargement livraisons:",
                 error
             );
+
         } finally {
+
             setLoading(false);
         }
     };
 
+
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            fetchDeliveries();
-        }, 500);
 
-        return () => clearTimeout(timeout);
+        const timeout =
+            setTimeout(() => {
+                fetchDeliveries();
+            }, 500);
 
-    }, [page, search, statusFilter]);
+        return () =>
+            clearTimeout(timeout);
+
+    }, [
+        page,
+        search,
+        statusFilter,
+        orderBy,
+        order,
+    ]);
+
+
+    const handleSort = (property) => {
+
+        const isAsc =
+            orderBy === property &&
+            order === "asc";
+
+        setOrder(
+            isAsc
+                ? "desc"
+                : "asc"
+        );
+
+        setOrderBy(property);
+
+        setPage(0);
+    };
 
 
     const formatDate = (date) => {
@@ -169,8 +215,6 @@ const AdminDeliveries = () => {
     return (
 
         <Box>
-
-            {/* HEADER */}
 
             <Box
                 sx={{
@@ -216,8 +260,6 @@ const AdminDeliveries = () => {
                 }}
             >
 
-                {/* FILTERS */}
-
                 <Box
                     sx={{
                         p: 2.5,
@@ -239,7 +281,9 @@ const AdminDeliveries = () => {
                         placeholder="Rechercher une livraison..."
                         value={search}
                         onChange={(event) => {
-                            setSearch(event.target.value);
+                            setSearch(
+                                event.target.value
+                            );
                             setPage(0);
                         }}
                         sx={{
@@ -284,11 +328,14 @@ const AdminDeliveries = () => {
                         <Select
                             value={statusFilter}
                             onChange={(event) => {
-                                setStatusFilter(event.target.value);
+                                setStatusFilter(
+                                    event.target.value
+                                );
                                 setPage(0);
                             }}
                             sx={{
-                                borderRadius: "9px",
+                                borderRadius:
+                                    "9px",
                                 fontSize: "13px",
                             }}
                         >
@@ -332,8 +379,6 @@ const AdminDeliveries = () => {
                 </Box>
 
 
-                {/* TABLE */}
-
                 <TableContainer>
 
                     <Table>
@@ -347,41 +392,65 @@ const AdminDeliveries = () => {
                                 }}
                             >
 
-                                {[
-                                    "Tracking",
-                                    "Client",
-                                    "Destination",
-                                    "Chauffeur",
-                                    "Commerçant",
-                                    "Statut",
-                                    "Date",
-                                    "",
-                                ].map(
-                                    (
-                                        column,
-                                        index
-                                    ) => (
+                                <SortableHeader
+                                    label="Tracking"
+                                    property="trackingCode"
+                                    orderBy={orderBy}
+                                    order={order}
+                                    onSort={handleSort}
+                                />
 
-                                        <TableCell
-                                            key={index}
-                                            sx={{
-                                                fontSize:
-                                                    "11px",
-                                                fontWeight:
-                                                    700,
-                                                color:
-                                                    "#64748B",
-                                                textTransform:
-                                                    "uppercase",
-                                                whiteSpace:
-                                                    "nowrap",
-                                            }}
-                                        >
-                                            {column}
-                                        </TableCell>
+                                <SortableHeader
+                                    label="Client"
+                                    property="clientName"
+                                    orderBy={orderBy}
+                                    order={order}
+                                    onSort={handleSort}
+                                />
 
-                                    )
-                                )}
+                                <SortableHeader
+                                    label="Destination"
+                                    property="dropAddress"
+                                    orderBy={orderBy}
+                                    order={order}
+                                    onSort={handleSort}
+                                />
+
+                                <SortableHeader
+                                    label="Chauffeur"
+                                    property="driver.name"
+                                    orderBy={orderBy}
+                                    order={order}
+                                    onSort={handleSort}
+                                />
+
+                                <SortableHeader
+                                    label="Commerçant"
+                                    property="merchant.businessName"
+                                    orderBy={orderBy}
+                                    order={order}
+                                    onSort={handleSort}
+                                />
+
+                                <SortableHeader
+                                    label="Statut"
+                                    property="deliveryStatus"
+                                    orderBy={orderBy}
+                                    order={order}
+                                    onSort={handleSort}
+                                />
+
+                                <SortableHeader
+                                    label="Date"
+                                    property="createdAt"
+                                    orderBy={orderBy}
+                                    order={order}
+                                    onSort={handleSort}
+                                />
+
+                                <TableCell
+                                    sx={headerStyle}
+                                />
 
                             </TableRow>
 
@@ -415,7 +484,8 @@ const AdminDeliveries = () => {
 
                                 </TableRow>
 
-                            ) : deliveries.length === 0 ? (
+                            ) : deliveries.length ===
+                            0 ? (
 
                                 <TableRow>
 
@@ -482,6 +552,7 @@ const AdminDeliveries = () => {
                                             >
 
                                                 <TableCell>
+
                                                     <Typography
                                                         sx={{
                                                             ...bodyStyle,
@@ -495,10 +566,12 @@ const AdminDeliveries = () => {
                                                             delivery.trackingCode
                                                         }
                                                     </Typography>
+
                                                 </TableCell>
 
 
                                                 <TableCell>
+
                                                     <Typography
                                                         sx={
                                                             bodyStyle
@@ -508,10 +581,12 @@ const AdminDeliveries = () => {
                                                             delivery.clientName
                                                         }
                                                     </Typography>
+
                                                 </TableCell>
 
 
                                                 <TableCell>
+
                                                     <Typography
                                                         title={
                                                             delivery.dropAddress
@@ -532,10 +607,12 @@ const AdminDeliveries = () => {
                                                             delivery.dropAddress
                                                         }
                                                     </Typography>
+
                                                 </TableCell>
 
 
                                                 <TableCell>
+
                                                     <Typography
                                                         sx={
                                                             bodyStyle
@@ -546,10 +623,12 @@ const AdminDeliveries = () => {
                                                             "Non assigné"
                                                         }
                                                     </Typography>
+
                                                 </TableCell>
 
 
                                                 <TableCell>
+
                                                     <Typography
                                                         sx={
                                                             bodyStyle
@@ -560,6 +639,7 @@ const AdminDeliveries = () => {
                                                             "-"
                                                         }
                                                     </Typography>
+
                                                 </TableCell>
 
 
@@ -590,6 +670,7 @@ const AdminDeliveries = () => {
 
 
                                                 <TableCell>
+
                                                     <Typography
                                                         sx={
                                                             bodyStyle
@@ -599,6 +680,7 @@ const AdminDeliveries = () => {
                                                             delivery.createdAt
                                                         )}
                                                     </Typography>
+
                                                 </TableCell>
 
 
@@ -656,8 +738,6 @@ const AdminDeliveries = () => {
                 </TableContainer>
 
 
-                {/* PAGINATION */}
-
                 {!loading &&
                     totalPages > 1 && (
 
@@ -710,6 +790,65 @@ const AdminDeliveries = () => {
 
         </Box>
     );
+};
+
+
+const SortableHeader = ({
+                            label,
+                            property,
+                            orderBy,
+                            order,
+                            onSort,
+                        }) => {
+
+    return (
+
+        <TableCell
+            sortDirection={
+                orderBy === property
+                    ? order
+                    : false
+            }
+            sx={headerStyle}
+        >
+
+            <TableSortLabel
+                active={
+                    orderBy === property
+                }
+                direction={
+                    orderBy === property
+                        ? order
+                        : "asc"
+                }
+                onClick={() =>
+                    onSort(property)
+                }
+                sx={{
+                    "&.Mui-active": {
+                        color: "#0B1F3A",
+                    },
+
+                    "&.Mui-active .MuiTableSortLabel-icon":
+                        {
+                            color: "#FF6B00",
+                        },
+                }}
+            >
+                {label}
+            </TableSortLabel>
+
+        </TableCell>
+    );
+};
+
+
+const headerStyle = {
+    fontSize: "11px",
+    fontWeight: 700,
+    color: "#64748B",
+    textTransform: "uppercase",
+    whiteSpace: "nowrap",
 };
 
 
