@@ -66,8 +66,7 @@ export default function DriverDashboard() {
     const [size, setSize] =
         useState(5);
 
-    const [orderBy, setOrderBy] =
-        useState("id");
+    const [orderBy, setOrderBy] = useState("createdAt");
 
     const [order, setOrder] =
         useState("desc");

@@ -64,7 +64,7 @@ export default function MerchantDashboard() {
         useState(5);
 
     const [orderBy, setOrderBy] =
-        useState("id");
+        useState("createdAt");
 
     const [order, setOrder] =
         useState("desc");
