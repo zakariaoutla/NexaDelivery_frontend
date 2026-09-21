@@ -55,7 +55,7 @@ import {
 } from "../../api/driverService.js";
 
 import {
-    getAllVehicles,
+    getAvailableVehicles,
 } from "../../api/vehicleService.js";
 
 
@@ -135,20 +135,16 @@ const AdminDriverDetails = () => {
         const response =
             await getDriverById(id);
 
-        const data = response.data;
+        setDriver(response.data);
 
-        setDriver(data);
-
-        setVehicleId(
-            data.vehicleId ?? ""
-        );
+        setVehicleId("");
     };
 
 
     const loadVehicles = async () => {
 
         const response =
-            await getAllVehicles(
+            await getAvailableVehicles(
                 0,
                 100,
                 "id",
@@ -222,9 +218,9 @@ const AdminDriverDetails = () => {
 
             setDriver(response.data);
 
-            setVehicleId(
-                response.data.vehicleId ?? ""
-            );
+            setVehicleId("");
+
+            await loadVehicles();
 
             showMessage(
                 "Véhicule affecté avec succès."
@@ -237,9 +233,7 @@ const AdminDriverDetails = () => {
                 error
             );
 
-            setVehicleId(
-                driver?.vehicleId ?? ""
-            );
+            setVehicleId("");
 
             showMessage(
                 error.response?.data?.message ||
@@ -266,6 +260,8 @@ const AdminDriverDetails = () => {
             setDriver(response.data);
 
             setVehicleId("");
+
+            await loadVehicles();
 
             setRemoveDialogOpen(false);
 
@@ -360,14 +356,6 @@ const AdminDriverDetails = () => {
             bgcolor: "#F1F5F9",
             color: "#64748B",
         };
-
-
-    const currentVehicle =
-        vehicles.find(
-            (vehicle) =>
-                Number(vehicle.id) ===
-                Number(driver.vehicleId)
-        );
 
 
     return (
@@ -750,9 +738,7 @@ const AdminDriverDetails = () => {
                                                 "#0B1F3A",
                                         }}
                                     >
-                                        {currentVehicle
-                                            ? `${currentVehicle.type} — ${currentVehicle.capacityKg} kg`
-                                            : driver.vehicleType ||
+                                        {driver.vehicleType ||
                                             "Non assigné"}
                                     </Typography>
 
@@ -825,131 +811,152 @@ const AdminDriverDetails = () => {
                         </Typography>
 
 
-                        <Box
-                            sx={{
-                                display: "flex",
-                                gap: 1.5,
-                                flexDirection: {
-                                    xs: "column",
-                                    sm: "row",
-                                },
-                            }}
-                        >
+                        {vehicles.length > 0 ? (
 
-                            <FormControl
-                                size="small"
-                                fullWidth
-                            >
-
-                                <Select
-                                    value={
-                                        vehicleId
-                                    }
-                                    displayEmpty
-                                    onChange={(
-                                        event
-                                    ) =>
-                                        setVehicleId(
-                                            event
-                                                .target
-                                                .value
-                                        )
-                                    }
-                                    sx={{
-                                        borderRadius:
-                                            "9px",
-                                        fontSize:
-                                            "13px",
-                                    }}
-                                >
-
-                                    <MenuItem
-                                        value=""
-                                        disabled
-                                    >
-                                        Sélectionner un véhicule
-                                    </MenuItem>
-
-                                    {vehicles.map(
-                                        (vehicle) => (
-
-                                            <MenuItem
-                                                key={
-                                                    vehicle.id
-                                                }
-                                                value={
-                                                    vehicle.id
-                                                }
-                                            >
-                                                {vehicle.type} — {vehicle.capacityKg} kg
-                                            </MenuItem>
-
-                                        )
-                                    )}
-
-                                </Select>
-
-                            </FormControl>
-
-
-                            <Button
-                                variant="contained"
-                                onClick={
-                                    handleAssignVehicle
-                                }
-                                disabled={
-                                    vehicleLoading ||
-                                    !vehicleId ||
-                                    Number(
-                                        vehicleId
-                                    ) ===
-                                    Number(
-                                        driver.vehicleId
-                                    )
-                                }
+                            <Box
                                 sx={{
-                                    minWidth:
-                                        "130px",
-                                    bgcolor:
-                                        "#0B1F3A",
-                                    textTransform:
-                                        "none",
-                                    borderRadius:
-                                        "9px",
-                                    boxShadow:
-                                        "none",
-                                    "&:hover": {
-                                        bgcolor:
-                                            "#132F52",
-                                        boxShadow:
-                                            "none",
+                                    display: "flex",
+                                    gap: 1.5,
+                                    flexDirection: {
+                                        xs: "column",
+                                        sm: "row",
                                     },
                                 }}
                             >
 
-                                {vehicleLoading ? (
+                                <FormControl
+                                    size="small"
+                                    fullWidth
+                                >
 
-                                    <CircularProgress
-                                        size={20}
+                                    <Select
+                                        value={
+                                            vehicleId
+                                        }
+                                        displayEmpty
+                                        onChange={(
+                                            event
+                                        ) =>
+                                            setVehicleId(
+                                                event
+                                                    .target
+                                                    .value
+                                            )
+                                        }
                                         sx={{
-                                            color:
-                                                "#FFFFFF",
+                                            borderRadius:
+                                                "9px",
+                                            fontSize:
+                                                "13px",
                                         }}
-                                    />
+                                    >
 
-                                ) : driver.vehicleId ? (
+                                        <MenuItem
+                                            value=""
+                                            disabled
+                                        >
+                                            Sélectionner un véhicule
+                                        </MenuItem>
 
-                                    "Changer"
+                                        {vehicles.map(
+                                            (vehicle) => (
 
-                                ) : (
+                                                <MenuItem
+                                                    key={
+                                                        vehicle.id
+                                                    }
+                                                    value={
+                                                        vehicle.id
+                                                    }
+                                                >
+                                                    {vehicle.type} — {vehicle.capacityKg} kg
+                                                </MenuItem>
 
-                                    "Affecter"
+                                            )
+                                        )}
 
-                                )}
+                                    </Select>
 
-                            </Button>
+                                </FormControl>
 
-                        </Box>
+
+                                <Button
+                                    variant="contained"
+                                    onClick={
+                                        handleAssignVehicle
+                                    }
+                                    disabled={
+                                        vehicleLoading ||
+                                        !vehicleId
+                                    }
+                                    sx={{
+                                        minWidth:
+                                            "130px",
+                                        bgcolor:
+                                            "#0B1F3A",
+                                        textTransform:
+                                            "none",
+                                        borderRadius:
+                                            "9px",
+                                        boxShadow:
+                                            "none",
+                                        "&:hover": {
+                                            bgcolor:
+                                                "#132F52",
+                                            boxShadow:
+                                                "none",
+                                        },
+                                    }}
+                                >
+
+                                    {vehicleLoading ? (
+
+                                        <CircularProgress
+                                            size={20}
+                                            sx={{
+                                                color:
+                                                    "#FFFFFF",
+                                            }}
+                                        />
+
+                                    ) : driver.vehicleId ? (
+
+                                        "Changer"
+
+                                    ) : (
+
+                                        "Affecter"
+
+                                    )}
+
+                                </Button>
+
+                            </Box>
+
+                        ) : (
+
+                            <Box
+                                sx={{
+                                    p: 2,
+                                    bgcolor: "#F8FAFC",
+                                    borderRadius: "9px",
+                                    border:
+                                        "1px solid #E5E7EB",
+                                }}
+                            >
+
+                                <Typography
+                                    sx={{
+                                        fontSize: "13px",
+                                        color: "#64748B",
+                                    }}
+                                >
+                                    Aucun véhicule disponible.
+                                </Typography>
+
+                            </Box>
+
+                        )}
 
                     </Box>
 
@@ -996,13 +1003,11 @@ const AdminDriverDetails = () => {
                             lineHeight: 1.7,
                         }}
                     >
-                        Voulez-vous vraiment retirer ce véhicule du chauffeur
-                        {" "}
+                        Voulez-vous vraiment retirer ce véhicule du chauffeur{" "}
                         <strong>
                             {driver.name}
                         </strong>
-                        {" "}
-                        ?
+                        {" "}?
                     </Typography>
 
                     <Typography

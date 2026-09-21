@@ -33,6 +33,24 @@ export const updateVehicle = (id, data) => {
     );
 };
 
+export const getAvailableVehicles = (
+    page = 0,
+    size = 100,
+    orderBy = "id",
+    order = "asc"
+) => {
+    return axiosInstance.get(
+        "/vehicle/available",
+        {
+            params: {
+                page,
+                size,
+                sort: `${orderBy},${order}`,
+            },
+        }
+    );
+};
+
 export const deleteVehicle = (id) => {
     return axiosInstance.delete(
         `/vehicle/${id}`
