@@ -40,3 +40,67 @@ export const updateMyDriverProfile = (data) => {
         data
     );
 };
+
+export const getAllDrivers = (
+    page = 0,
+    size = 10,
+    orderBy = "name",
+    order = "asc",
+    search = "",
+    status = ""
+) => {
+    return axiosInstance.get("/driver", {
+        params: {
+            page,
+            size,
+            sort: `${orderBy},${order}`,
+            ...(search.trim() && {
+                search: search.trim(),
+            }),
+            ...(status && status !== "ALL" && {
+                status: status,
+            }),
+        },
+    });
+};
+
+
+export const updateDriver = (id, data) => {
+    return axiosInstance.put(
+        `/driver/${id}`,
+        data
+    );
+};
+
+export const deleteDriver = (id) => {
+    return axiosInstance.delete(
+        `/driver/${id}`
+    );
+};
+
+export const updateDriverStatus = (
+    id,
+    driverStatus
+) => {
+    return axiosInstance.put(
+        `/driver/${id}/status`,
+        {
+            driverStatus,
+        }
+    );
+};
+
+export const assignVehicleToDriver = (
+    driverId,
+    vehicleId
+) => {
+    return axiosInstance.put(
+        `/driver/${driverId}/vehicle/${vehicleId}`
+    );
+};
+
+export const getDriverById = (id) => {
+    return axiosInstance.get(
+        `/driver/${id}`
+    );
+};

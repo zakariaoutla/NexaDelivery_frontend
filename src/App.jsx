@@ -27,6 +27,7 @@ import DriverProfile from "./page/driver/DriverProfile.jsx";
 import CollectionPoints from "./page/merchant/CollectionPoints.jsx";
 import AdminDeliveries from "./page/admin/AdminDeliveries.jsx";
 import AdminDeliveryDetails from "./page/admin/AdminDeliveryDetails.jsx";
+import AdminDrivers from "./page/admin/AdminDrivers.jsx";
 
 function App() {
 
@@ -76,6 +77,10 @@ function App() {
                 <Route
                     path="deliveries/:id"
                     element={<AdminDeliveryDetails />}
+                />
+                <Route
+                    path="drivers"
+                    element={<AdminDrivers />}
                 />
 
             </Route>
