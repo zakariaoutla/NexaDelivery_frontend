@@ -30,6 +30,7 @@ import AdminDeliveryDetails from "./page/admin/AdminDeliveryDetails.jsx";
 import AdminDrivers from "./page/admin/AdminDrivers.jsx";
 import AdminDriverDetails from "./page/admin/AdminDriverDetails.jsx";
 import AdminVehicles from "./page/admin/AdminVehicles.jsx";
+import AdminMerchants from "./page/admin/AdminMerchants.jsx";
 
 function App() {
 
@@ -91,6 +92,11 @@ function App() {
                 <Route
                     path="vehicles"
                     element={<AdminVehicles />}
+                />
+
+                <Route
+                    path="merchants"
+                    element={<AdminMerchants />}
                 />
 
             </Route>
