@@ -32,6 +32,8 @@ import AdminDriverDetails from "./page/admin/AdminDriverDetails.jsx";
 import AdminVehicles from "./page/admin/AdminVehicles.jsx";
 import AdminMerchants from "./page/admin/AdminMerchants.jsx";
 import AdminMerchantDetails from "./page/admin/AdminMerchantDetails.jsx";
+import Unauthorized from "./page/Unauthorized.jsx";
+import NotFound from "./page/NotFound.jsx";
 
 function App() {
 
@@ -51,6 +53,17 @@ function App() {
                 <FinalCTASection/>
                 <Footer/>
             </>}/>
+
+            <Route
+                path="/unauthorized"
+                element={
+                    <RouteGuard>
+                        <Unauthorized />
+                    </RouteGuard>
+                }
+            />
+
+            <Route path="*" element={<NotFound />} />
 
 
 
@@ -123,7 +136,6 @@ function App() {
                     path="deliveries/:id/tracking"
                     element={<DeliveryTracking />}
                 />
-                <Route path="profile" element={<MerchantProfile/>}/>
                 <Route
                     path="collection-points"
                     element={<CollectionPoints />}

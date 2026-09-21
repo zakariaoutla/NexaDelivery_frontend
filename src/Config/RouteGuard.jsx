@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext.jsx";
 
-
 const dashboardByRole = {
     ADMIN: "/admin",
     DRIVER: "/driver",
@@ -13,7 +12,6 @@ const RouteGuard = ({
                         children,
                         allowedRoles,
                         guestOnly = false,
-                        redirectTo = "/dashboard",
                     }) => {
     const { user, loading } = useContext(AuthContext);
 
@@ -35,7 +33,7 @@ const RouteGuard = ({
     }
 
     if (allowedRoles && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/unauthorized" replace />;
     }
 
     return children;
