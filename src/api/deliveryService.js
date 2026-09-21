@@ -44,3 +44,7 @@ export const getAllDeliveries = (
         },
     });
 };
+
+export const getDeliveryById = (id) => {
+    return axiosInstance.get(`/delivery/${id}`);
+};
