@@ -13,7 +13,7 @@ import Login from "./page/Login.jsx";
 import Register from "./page/Register.jsx";
 import {ToastContainer} from "react-toastify";
 import RouteGuard from "./Config/RouteGuard.jsx";
-import AdminDashboard from "./page/AdminDashboard.jsx";
+import AdminDashboard from "./page/admin/AdminDashboard.jsx";
 import MerchantDashboard from "./page/merchant/MerchantDashboard.jsx";
 import DashboardLayout from "./layout/DashboardLayout.jsx";
 import CreateDelivery from "./page/merchant/CreateDelivery.jsx";
@@ -62,9 +62,14 @@ function App() {
 
             <Route path="/admin" element={
                 <RouteGuard allowedRoles={["ADMIN"]}>
-                    <AdminDashboard/>
+                    <DashboardLayout/>
                 </RouteGuard>
-            }/>
+
+            }>
+            <Route index element={<AdminDashboard/>}/>
+
+            </Route>
+
 
             <Route path="/merchant" element={<>
                <RouteGuard allowedRoles={["MERCHANT"]}>

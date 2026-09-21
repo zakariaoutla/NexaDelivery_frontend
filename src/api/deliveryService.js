@@ -24,3 +24,21 @@ export const updateMyDeliveryStatus = (deliveryId, deliveryStatus) => {
         }
     );
 };
+
+export const getAllDeliveries = (
+    page = 0,
+    size = 5,
+    orderBy = "createdAt",
+    order = "desc"
+) => {
+    return axiosInstance.get(
+        "/delivery",
+        {
+            params: {
+                page,
+                size,
+                sort: `${orderBy},${order}`,
+            },
+        }
+    );
+};

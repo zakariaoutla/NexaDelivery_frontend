@@ -13,3 +13,8 @@ export const sendDriverLocation = (
         }
     );
 };
+
+
+export const getLatestDriverLocations = () => {
+    return axiosInstance.get("/driver-location/latest");
+};
