@@ -163,3 +163,12 @@ export const disconnectDeliveryTracking = async (
         }
     }
 };
+
+
+export const getPublicTracking = async (trackingCode) => {
+    const response = await axiosInstance.get(
+        `/public/tracking/${encodeURIComponent(trackingCode.trim())}`
+    );
+
+    return response.data;
+};

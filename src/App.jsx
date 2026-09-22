@@ -34,6 +34,7 @@ import AdminMerchants from "./page/admin/AdminMerchants.jsx";
 import AdminMerchantDetails from "./page/admin/AdminMerchantDetails.jsx";
 import Unauthorized from "./page/Unauthorized.jsx";
 import NotFound from "./page/NotFound.jsx";
+import Tracking from "./page/Tracking.jsx";
 
 function App() {
 
@@ -64,6 +65,8 @@ function App() {
             />
 
             <Route path="*" element={<NotFound />} />
+
+            <Route path="/tracking" element={<Tracking />} />
 
 
 
