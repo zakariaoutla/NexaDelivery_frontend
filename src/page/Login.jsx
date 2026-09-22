@@ -3,8 +3,6 @@ import {useContext, useState} from "react";
 import {
     Box,
     Button,
-    Checkbox,
-    FormControlLabel,
     IconButton,
     InputAdornment,
     TextField,
@@ -16,7 +14,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import {useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {postLogin} from "../api/auth.js";
 import {toast} from "react-toastify";
 import {AuthContext} from "../Config/AuthContext.jsx";
@@ -496,66 +494,8 @@ function Login() {
                                 gap: 1,
                             }}
                         >
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="remember"
-                                        checked={formData.remember}
-                                        onChange={handleChange}
-                                        size="small"
-                                        sx={{
-                                            p: 0.5,
-                                            mr: 0.4,
 
-                                            color: "#CBD5E1",
 
-                                            "&.Mui-checked": {
-                                                color: "#FF6B00",
-                                            },
-                                        }}
-                                    />
-                                }
-                                label="Se souvenir de moi"
-                                sx={{
-                                    m: 0,
-
-                                    "& .MuiFormControlLabel-label": {
-                                        color: "#38445C",
-
-                                        fontSize: {
-                                            xs: "10px",
-                                            sm: "11px",
-                                        },
-                                    },
-                                }}
-                            />
-
-                            <Button
-                                type="button"
-                                disableRipple
-                                sx={{
-                                    p: 0,
-                                    minWidth: "auto",
-
-                                    textTransform: "none",
-
-                                    color: "#1556C0",
-
-                                    fontSize: {
-                                        xs: "10px",
-                                        sm: "11px",
-                                    },
-
-                                    fontWeight: 600,
-
-                                    "&:hover": {
-                                        bgcolor: "transparent",
-                                        color: "#FF6B00",
-                                    },
-                                }}
-                            >
-                                Mot de passe oublié ?
-                            </Button>
                         </Box>
 
                         <Button
@@ -630,6 +570,8 @@ function Login() {
                         </Box>
 
                         <Button
+                            component={NavLink}
+                            to="/register"
                             fullWidth
                             type="button"
                             variant="outlined"

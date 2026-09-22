@@ -19,8 +19,8 @@ function Footer() {
         navigation: [
             "Accueil",
             "Fonctionnalités",
-            "Pourquoi ?",
-            "À propos",
+            "Comment Ça Marche",
+            "Suivi colis",
             "Contact",
         ],
         platform: [
@@ -150,7 +150,7 @@ function Footer() {
                                 <Typography
                                     key={item}
                                     component="a"
-                                    href="#"
+                                    href=""
                                     sx={{
                                         color: "rgba(255,255,255,0.60)",
                                         fontSize: "10px",

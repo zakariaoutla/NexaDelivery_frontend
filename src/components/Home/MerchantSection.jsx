@@ -14,6 +14,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
+import {NavLink} from "react-router-dom";
 
 function MerchantSection() {
     const features = [
@@ -587,6 +588,8 @@ function MerchantSection() {
 
 
                         <Button
+                            component={NavLink}
+                            to="/register"
                             variant="contained"
                             endIcon={<ArrowForwardRoundedIcon />}
                             disableElevation

@@ -8,6 +8,7 @@ import {
 
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
+import {NavLink} from "react-router-dom";
 
 function FinalCTASection() {
     return (
@@ -139,6 +140,8 @@ function FinalCTASection() {
                             sx={{ mt: 2.7 }}
                         >
                             <Button
+                                component={NavLink}
+                                to="/register"
                                 variant="contained"
                                 endIcon={<ArrowForwardRoundedIcon />}
                                 sx={{
@@ -161,6 +164,8 @@ function FinalCTASection() {
                             </Button>
 
                             <Button
+                                component={NavLink}
+                                to="/login"
                                 variant="outlined"
                                 startIcon={<LoginRoundedIcon />}
                                 sx={{

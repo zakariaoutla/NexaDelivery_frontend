@@ -5,7 +5,7 @@ import MerchantSection from "./components/Home/MerchantSection.jsx";
 import PlatformSection from "./components/Home/PlatformSection.jsx";
 import HowItWorks from "./components/Home/HowItWorks.jsx";
 import ImpactSection from "./components/Home/ImpactSection.jsx";
-import TestimonialsSection from "./components/Home/TestimonialsSection.jsx";
+import ContactSection from "./components/Home/ContactSection.jsx";
 import FinalCTASection from "./components/Home/FinalCTASection.jsx";
 import Footer from "./components/Home/Footer.jsx";
 import {Route, Routes} from "react-router-dom";
@@ -50,7 +50,7 @@ function App() {
                 <PlatformSection/>
                 <HowItWorks/>
                 <ImpactSection/>
-                <TestimonialsSection/>
+                <ContactSection/>
                 <FinalCTASection/>
                 <Footer/>
             </>}/>

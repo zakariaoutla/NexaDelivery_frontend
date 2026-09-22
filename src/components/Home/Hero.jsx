@@ -10,6 +10,7 @@ import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import {NavLink} from "react-router-dom";
 
 function Hero() {
     const benefits = [
@@ -341,6 +342,8 @@ function Hero() {
                     >
                         <Button
                             variant="contained"
+                            component={NavLink}
+                            to="/register"
                             endIcon={<ArrowForwardRoundedIcon />}
                             disableElevation
                             sx={{
@@ -362,10 +365,12 @@ function Hero() {
                                 },
                             }}
                         >
-                            Découvrir la plateforme
+                            Commencer
                         </Button>
 
                         <Button
+                            component={NavLink}
+                            to="/login"
                             variant="outlined"
                             sx={{
                                 color: "#FFFFFF",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import {
     AppBar,
@@ -12,11 +12,15 @@ import {
 
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+
 import { NavLink, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../Config/AuthContext.jsx";
 
 function Navbar() {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
 
     const navLinks = [
         {
@@ -44,6 +48,26 @@ function Navbar() {
             section: "contact",
         },
     ];
+
+    const getDashboardPath = () => {
+        if (!user) {
+            return "/login";
+        }
+
+        switch (user.role) {
+            case "ADMIN":
+                return "/admin";
+
+            case "MERCHANT":
+                return "/merchant";
+
+            case "DRIVER":
+                return "/driver";
+
+            default:
+                return "/";
+        }
+    };
 
     const handleNavigation = (link) => {
         setOpen(false);
@@ -88,6 +112,7 @@ function Navbar() {
                 top: 0,
                 behavior: "smooth",
             });
+
             return;
         }
 
@@ -225,76 +250,123 @@ function Navbar() {
                             flexShrink: 0,
                         }}
                     >
-                        <Button
-                            component={NavLink}
-                            to="/login"
-                            variant="outlined"
-                            sx={{
-                                color: "#FFFFFF",
-                                borderColor: "rgba(255,255,255,0.55)",
-                                textTransform: "none",
-                                fontSize: {
-                                    md: "10px",
-                                    lg: "11px",
-                                    xl: "12px",
-                                },
-                                fontWeight: 500,
-                                px: {
-                                    md: 1.6,
-                                    lg: 2,
-                                    xl: 2.5,
-                                },
-                                py: 1,
-                                borderRadius: "10px",
-                                minWidth: {
-                                    md: "95px",
-                                    lg: "100px",
-                                    xl: "110px",
-                                },
-                                "&:hover": {
-                                    borderColor: "#FFFFFF",
-                                    backgroundColor:
-                                        "rgba(255,255,255,0.08)",
-                                },
-                            }}
-                        >
-                            Se connecter
-                        </Button>
+                        {user ? (
+                            <Button
+                                component={NavLink}
+                                to={getDashboardPath()}
+                                variant="contained"
+                                disableElevation
+                                startIcon={
+                                    <DashboardRoundedIcon
+                                        sx={{
+                                            fontSize: "17px !important",
+                                        }}
+                                    />
+                                }
+                                sx={{
+                                    backgroundColor: "#FF6B00",
+                                    color: "#FFFFFF",
+                                    textTransform: "none",
+                                    fontSize: {
+                                        md: "10px",
+                                        lg: "11px",
+                                        xl: "12px",
+                                    },
+                                    fontWeight: 600,
+                                    px: {
+                                        md: 1.8,
+                                        lg: 2.2,
+                                        xl: 2.6,
+                                    },
+                                    py: 1,
+                                    borderRadius: "10px",
+                                    whiteSpace: "nowrap",
+                                    minWidth: {
+                                        md: "135px",
+                                        lg: "145px",
+                                    },
+                                    "&:hover": {
+                                        backgroundColor: "#E85F00",
+                                    },
+                                }}
+                            >
+                                Tableau de bord
+                            </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    component={NavLink}
+                                    to="/login"
+                                    variant="outlined"
+                                    sx={{
+                                        color: "#FFFFFF",
+                                        borderColor:
+                                            "rgba(255,255,255,0.55)",
+                                        textTransform: "none",
+                                        fontSize: {
+                                            md: "10px",
+                                            lg: "11px",
+                                            xl: "12px",
+                                        },
+                                        fontWeight: 500,
+                                        px: {
+                                            md: 1.6,
+                                            lg: 2,
+                                            xl: 2.5,
+                                        },
+                                        py: 1,
+                                        borderRadius: "10px",
+                                        minWidth: {
+                                            md: "95px",
+                                            lg: "100px",
+                                            xl: "110px",
+                                        },
+                                        "&:hover": {
+                                            borderColor: "#FFFFFF",
+                                            backgroundColor:
+                                                "rgba(255,255,255,0.08)",
+                                        },
+                                    }}
+                                >
+                                    Se connecter
+                                </Button>
 
-                        <Button
-                            component={NavLink}
-                            to="/register"
-                            variant="contained"
-                            disableElevation
-                            sx={{
-                                backgroundColor: "#FF6B00",
-                                color: "#FFFFFF",
-                                textTransform: "none",
-                                fontSize: {
-                                    md: "10px",
-                                    lg: "11px",
-                                    xl: "12px",
-                                },
-                                fontWeight: 600,
-                                px: {
-                                    md: 1.6,
-                                    lg: 2,
-                                    xl: 2.5,
-                                },
-                                py: 1,
-                                borderRadius: "10px",
-                                minWidth: {
-                                    md: "90px",
-                                    lg: "95px",
-                                    xl: "105px",
-                                },
-                                "&:hover": {
-                                    backgroundColor: "#E85F00",
-                                },
-                            }}
-                        >
-                            Commencer
-                        </Button>
+                                <Button
+                                    component={NavLink}
+                                    to="/register"
+                                    variant="contained"
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: "#FF6B00",
+                                        color: "#FFFFFF",
+                                        textTransform: "none",
+                                        fontSize: {
+                                            md: "10px",
+                                            lg: "11px",
+                                            xl: "12px",
+                                        },
+                                        fontWeight: 600,
+                                        px: {
+                                            md: 1.6,
+                                            lg: 2,
+                                            xl: 2.5,
+                                        },
+                                        py: 1,
+                                        borderRadius: "10px",
+                                        minWidth: {
+                                            md: "90px",
+                                            lg: "95px",
+                                            xl: "105px",
+                                        },
+                                        "&:hover": {
+                                            backgroundColor: "#E85F00",
+                                        },
+                                    }}
+                                >
+                                    Commencer
+                                </Button>
+                            </>
+                        )}
                     </Stack>
 
                     <IconButton
@@ -415,49 +487,77 @@ function Navbar() {
                 />
 
                 <Stack spacing={1.5}>
-                    <Button
-                        component={NavLink}
-                        to="/login"
-                        onClick={() => setOpen(false)}
-                        variant="outlined"
-                        fullWidth
-                        sx={{
-                            color: "#FFFFFF",
-                            borderColor: "rgba(255,255,255,0.5)",
-                            textTransform: "none",
-                            borderRadius: "10px",
-                            py: 1.2,
-                            "&:hover": {
-                                borderColor: "#FFFFFF",
-                                backgroundColor:
-                                    "rgba(255,255,255,0.06)",
-                            },
-                        }}
-                    >
-                        Se connecter
-                    </Button>
+                    {user ? (
+                        <Button
+                            component={NavLink}
+                            to={getDashboardPath()}
+                            onClick={() => setOpen(false)}
+                            variant="contained"
+                            fullWidth
+                            disableElevation
+                            startIcon={<DashboardRoundedIcon />}
+                            sx={{
+                                backgroundColor: "#FF6B00",
+                                color: "#FFFFFF",
+                                textTransform: "none",
+                                fontWeight: 600,
+                                borderRadius: "10px",
+                                py: 1.2,
+                                "&:hover": {
+                                    backgroundColor: "#E85F00",
+                                },
+                            }}
+                        >
+                            Tableau de bord
+                        </Button>
+                    ) : (
+                        <>
+                            <Button
+                                component={NavLink}
+                                to="/login"
+                                onClick={() => setOpen(false)}
+                                variant="outlined"
+                                fullWidth
+                                sx={{
+                                    color: "#FFFFFF",
+                                    borderColor:
+                                        "rgba(255,255,255,0.5)",
+                                    textTransform: "none",
+                                    borderRadius: "10px",
+                                    py: 1.2,
+                                    "&:hover": {
+                                        borderColor: "#FFFFFF",
+                                        backgroundColor:
+                                            "rgba(255,255,255,0.06)",
+                                    },
+                                }}
+                            >
+                                Se connecter
+                            </Button>
 
-                    <Button
-                        component={NavLink}
-                        to="/register"
-                        onClick={() => setOpen(false)}
-                        variant="contained"
-                        fullWidth
-                        disableElevation
-                        sx={{
-                            backgroundColor: "#FF6B00",
-                            color: "#FFFFFF",
-                            textTransform: "none",
-                            fontWeight: 600,
-                            borderRadius: "10px",
-                            py: 1.2,
-                            "&:hover": {
-                                backgroundColor: "#E85F00",
-                            },
-                        }}
-                    >
-                        Commencer
-                    </Button>
+                            <Button
+                                component={NavLink}
+                                to="/register"
+                                onClick={() => setOpen(false)}
+                                variant="contained"
+                                fullWidth
+                                disableElevation
+                                sx={{
+                                    backgroundColor: "#FF6B00",
+                                    color: "#FFFFFF",
+                                    textTransform: "none",
+                                    fontWeight: 600,
+                                    borderRadius: "10px",
+                                    py: 1.2,
+                                    "&:hover": {
+                                        backgroundColor: "#E85F00",
+                                    },
+                                }}
+                            >
+                                Commencer
+                            </Button>
+                        </>
+                    )}
                 </Stack>
             </Drawer>
         </>

@@ -136,6 +136,7 @@ function Register() {
             >
 
                 <Box
+
                     component="img"
                     src="/login-bg.png"
                     alt="NexaDelivery"
@@ -295,6 +296,7 @@ function Register() {
             >
 
                 <Box
+                    onClick={() => navigate("/")}
                     component="img"
                     src="/loginexadeliveryBlack.png"
                     alt="NexaDelivery"
