@@ -133,17 +133,10 @@ export default function TableDelivery({
             ) : (
 
 
-                // =================================================
-                // DELIVERIES
-                // =================================================
+
 
                 deliveries.map(
                     (delivery) => {
-
-
-                        // =========================================
-                        // DELIVERY STATUS
-                        // =========================================
 
                         const status =
                             statusConfig[

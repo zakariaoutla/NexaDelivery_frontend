@@ -29,9 +29,6 @@ import PhoneOutlinedIcon
 import LocalShippingOutlinedIcon
     from "@mui/icons-material/LocalShippingOutlined";
 
-import LocationOnOutlinedIcon
-    from "@mui/icons-material/LocationOnOutlined";
-
 import StarRoundedIcon
     from "@mui/icons-material/StarRounded";
 
